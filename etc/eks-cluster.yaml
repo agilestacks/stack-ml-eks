@@ -1,0 +1,95 @@
+apiVersion: eksctl.io/v1alpha5
+kind: ClusterConfig
+
+metadata:
+  name: happy-cluster
+  region: eu-west-1
+
+availabilityZones:
+- eu-west-1a
+- eu-west-1b
+- eu-west-1c
+
+nodeGroups:
+- name: workers
+  minSize: 2
+  maxSize: 5
+  instancesDistribution:
+    instanceTypes:
+    - m5.xlarge
+    - r4.xlarge
+    - r3.xlarge
+    - t3.xlarge
+    - t2.xlarge
+    maxPrice: 1.0
+    spotInstancePools: 2
+    onDemandBaseCapacity: 0
+    onDemandPercentageAboveBaseCapacity: 0
+  volumeSize: 100
+  volumeType: gp2
+  ssh:
+    # allow: true # will use ~/.ssh/id_rsa.pub as the default ssh key
+    publicKeyPath: ~/.ssh/agilestacks.pub
+  tags:
+    k8s.io/cluster-autoscaler/enabled: "true"
+    k8s.io/cluster-autoscaler/happy-cluster: "owned"
+  iam:
+    withAddonPolicies:
+      albIngress: true
+      autoScaler: true
+      cloudWatch: true
+      certManager: true
+      externalDNS: true
+
+iam:
+  withOIDC: true
+  serviceAccounts:
+  - metadata:
+      name: happy-cluster
+      namespace: kube-system
+      labels: {aws-usage: "cluster-ops"}
+    attachPolicy: # inline policy can be defined along with `attachPolicyARNs`
+      Version: "2012-10-17"
+      Statement:
+      - Effect: Allow
+        Action:
+        - "autoscaling:DescribeAutoScalingGroups"
+        - "autoscaling:DescribeAutoScalingInstances"
+        - "autoscaling:DescribeLaunchConfigurations"
+        - "autoscaling:DescribeTags"
+        - "autoscaling:SetDesiredCapacity"
+        - "autoscaling:TerminateInstanceInAutoScalingGroup"
+        # for external-dns
+        - "route53:ChangeResourceRecordSets"
+        - "route53:ListHostedZones"
+        - "route53:ListResourceRecordSets"
+        # read-write to s3 (hub or terraform state)
+        - "s3:ListBucket"
+        - "s3:*Object"
+        # Reserved for future OIDC integration
+        # - "sts:AssumeRoleWithWebIdentity"
+        Resource: '*'
+
+cloudWatch:
+  clusterLogging:
+    enableTypes:
+    - audit
+    - authenticator
+    - controllerManager
+    # - api
+    # - scheduler
+    # - all
+
+# git:
+#   repo:
+#     url: "git@github.com:myorg/cluster-21.git"
+#     branch: master
+#     fluxPath: "flux/"
+#     user: "gitops"
+#     email: "gitops@myorg.com"
+#   operator:
+#     namespace: "flux"
+#     withHelm: true
+#   bootstrapProfile:
+#     source: app-dev
+#     revision: master

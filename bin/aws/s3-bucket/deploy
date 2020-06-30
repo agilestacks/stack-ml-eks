@@ -1,0 +1,71 @@
+#!/bin/bash -e
+
+usage() {
+  cat << EOF
+Creates s3 bucket
+
+Usage: $(basename "$0") --bucket-name BUCKET
+
+Parameters:
+    --bucket-name         name of the bucket
+    --aws-region          AWS Region
+    --aws-profile         AWS Profile
+EOF
+}
+
+AWS_REGION="${AWS_REGION:-us-east-1}"
+ACL=private
+
+while [ "$1" != "" ]; do
+    case $1 in
+        --aws-region )    shift
+                          export AWS_REGION="$1"
+                          ;;
+        --aws-profile )   shift
+                          export AWS_PROFILE="$1"
+                          ;;
+        --bucket-name )   shift
+                          BUCKET_NAME="$1"
+                          ;;
+        --acl )           shift
+                          ACL="$1"
+                          ;;
+        -h | --help )     usage
+                          exit
+                          ;;
+    esac
+    shift
+done
+
+if test -z "$BUCKET_NAME"; then
+  usage
+  exit 1
+fi
+
+bucket_exists() {
+  aws s3api head-bucket --bucket="$1" 2>/dev/null
+}
+
+# bucket_exists "$BUCKET_NAME" && exit
+
+if test "$AWS_REGION" != "us-east-1"; then
+  LOCATION="--create-bucket-configuration LocationConstraint=$AWS_REGION"
+fi
+
+set +e
+# shellcheck disable=SC2086
+RESULT=$(aws s3api create-bucket \
+        --bucket="$BUCKET_NAME" \
+        --acl="$ACL" \
+        --region="$AWS_REGION" $LOCATION 2>&1 >/dev/null)
+if test "$?" != "0"; then 
+  if echo "$RESULT" | grep "BucketAlreadyOwnedByYou" >/dev/null; then
+    exit
+  fi
+else
+  echo "$RESULT"
+  exit 255
+fi
+set -e
+
+aws s3api wait bucket-exists --bucket="$BUCKET_NAME"

@@ -1,0 +1,75 @@
+#!/bin/bash -ex
+
+usage() {
+  cat << EOF
+Deletes a hosted zone by domain name and returns delegation set NS records
+
+Usage: $(basename "$0") --domain-name
+
+Parameters:
+    --domain-name         Domain name of the hosted zone
+    --aws-region          AWS Region
+    --aws-profile         AWS Profile
+EOF
+}
+
+while [ "$1" != "" ]; do
+    case $1 in
+        --aws-region )    shift
+                          export AWS_REGION="$1"
+                          ;;
+        --aws-profile )   shift
+                          export AWS_PROFILE="$1"
+                          ;;
+        --domain-name )   shift
+                          DOMAIN_NAME="$1"
+                          ;;
+        -h | --help )     usage
+                          exit
+                          ;;
+    esac
+    shift
+done
+
+if test -z "$DOMAIN_NAME"; then
+  usage
+  exit 1
+fi
+
+export AWS_DEFAULT_OUTPUT=text
+
+hosted_zone_id() {
+  aws route53 list-hosted-zones \
+    --query 'HostedZones[?Name==`'$1'.`].Id' \
+    | xargs | cut -d " " -f1
+}
+
+ZONE_ID=$(hosted_zone_id "$DOMAIN_NAME")
+if test -z "$ZONE_ID"; then
+  exit
+fi
+
+aws route53 list-resource-record-sets \
+  --hosted-zone-id $ZONE_ID |
+jq -c '.ResourceRecordSets[]' |
+while read -r resourcerecordset; do
+  read -r name type <<<"$(jq -r '.Name,.Type' <<<"$resourcerecordset")"
+  if test "$type" != "NS" && test "$type" != "SOA" ]; then
+    change_id=$(aws route53 change-resource-record-sets \
+      --hosted-zone-id $ZONE_ID \
+      --change-batch '{"Changes":[{"Action":"DELETE","ResourceRecordSet":
+          '"$resourcerecordset"'
+        }]}' \
+      --output text \
+      --query 'ChangeInfo.Id')
+    echo "Deleting: $type $name $change_id"
+  fi
+done
+
+echo "Deleting hosted zone: $ZONE_ID"
+CHANGE=$(aws route53 delete-hosted-zone \
+  --id="$ZONE_ID" \
+  --output=text \
+  --query='ChangeInfo.Id')
+
+aws route53 wait resource-record-sets-changed --id "$CHANGE"

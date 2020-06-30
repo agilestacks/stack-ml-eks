@@ -1,0 +1,94 @@
+#!/bin/bash -e
+# shellcheck disable=SC2086,SC1118
+
+usage() {
+  cat << EOF
+Creates infrastructure resources in your aws cloud that has been utilized by hub components
+
+Usage: $(basename "$0")
+
+Parameters:
+    --aws-region          AWS Region
+    --aws-profile         AWS Profile
+    -s  --silent          Suppress console outputs in favor of result codes
+    -v  --verbose         For debug purpose
+EOF
+}
+
+SILENT=false
+
+if [[ ! -f .env ]]; then
+  cat << EOF
+
+Error: cannot find .env file. Please run:
+  
+$ hub stack configure --kubecontext -
+
+EOF
+  exit 1
+fi
+
+source .env
+
+test -n "$@" && while [ "$1" != "" ]; do
+  case $1 in
+    --aws-region )      shift
+                        export AWS_REGION="$1"
+                        ;;
+    --aws-profile )     shift
+                        export AWS_PROFILE="$1"
+                        ;;
+    -S | --silent )     SILENT=true
+                        ;;
+    -V | --verbose )    set -x
+                        ;;
+    -h | --help )       usage
+                        exit
+                        ;;
+    * )                 usage
+                        exit 1
+  esac
+  shift
+done
+
+# TODO: replace this with smth better before script will be moved to extension
+DOMAIN_NAME="$PLATFORM_NAME.$BASE_DOMAIN"
+
+pwd=$(dirname "$0")
+
+set +e
+echo -n "Creating Route53 hosted zone for $DOMAIN_NAME: "
+# shellcheck disable=SC2046,SC2068
+NS=$($pwd/aws/route53-zone/deploy --domain-name "$DOMAIN_NAME" --json)
+if test "$?" = "0"; then 
+  echo "Done"
+else
+  echo "Fail"
+  exit 3
+fi
+
+echo -n "Creating S3 bucket for $BUCKET_AME: "
+$pwd/aws/s3-bucket/deploy \
+  --bucket-name "$STATE_BUCKET" \
+  --aws-region "$AWS_REGION" \
+  --acl "private"
+  
+if test "$?" = "0"; then 
+  echo "Done"
+else
+  echo "Fail"
+  exit 4
+fi
+set -e
+
+HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" -X PUT \
+      "https://api.agilestacks.io/dns/$DOMAIN_NAME" \
+      -H 'Content-Type: application/json;charset=UTF-8' \
+      -d "{\"key\": \"$DOMAIN_KEY\",\"nameservers\": $NS}")
+
+if test "$(echo $HTTP_CODE | cut -c1-1)" != "2"; then
+  $SILENT || echo "Something went wrong. Please try again later!"
+  exit 2
+fi
+
+$SILENT || echo "Done!"

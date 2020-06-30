@@ -1,0 +1,110 @@
+#!/bin/bash -e
+# shellcheck disable=SC2086,SC1118
+
+usage() {
+  cat << EOF
+Creates infrastructure resources in your aws cloud that has been utilized by hub components
+
+Usage: $(basename "$0")
+
+Parameters:
+    --aws-region          AWS Region
+    --aws-profile         AWS Profile
+    -s  --silent          Suppress console outputs in favor of result codes
+    -v  --verbose         For debug purpose
+EOF
+}
+
+if [[ ! -f .env ]]; then
+  test -n "$SILENT" && cat << EOF
+
+Error: cannot find .env file. Please run:
+  
+  hub configure -c
+
+EOF
+  exit 1
+fi
+
+source .env
+
+while [ "$1" != "" ]; do
+  case $1 in
+    --aws-region )      shift
+                        export AWS_REGION="$1"
+                        ;;
+    --aws-profile )     shift
+                        export AWS_PROFILE="$1"
+                        ;;
+    -S | --silent )     SILENT=1
+                        ;;
+    -V | --verbose )    set -x
+                        ;;
+    -h | --help )       usage
+                        exit
+                        ;;
+    * )                 usage
+                        exit 1
+  esac
+  shift
+done
+
+# TODO: replace this with smth better before script will be moved to extension
+DOMAIN_NAME="$PLATFORM_NAME.$BASE_DOMAIN"
+
+test -n "$SILENT" && cat << EOF
+Running terraform to create:
+* Route53 hosted zone "$DOMAIN_NAME" for components domain names
+* S3 bucket "$STATE_BUCKET" to store deployments state
+
+EOF
+
+export TF_LOG=
+export TF_DATA_DIR=.hub/.terraform
+export TF_CLI_ARGS="-input=false -no-color"
+export TF_CLI_ARGS_plan="-refresh -detailed-exitcode"
+export TF_IN_AUTOMATION=1
+export TF_INPUT=0
+export TF_VAR_region=$(echo $NEW_REGION $STATE_REGION $AWS_REGION $AWS_DEFAULT_REGION us-east-1 | cut -d " " -f1)
+export TF_VAR_domain_name="$DOMAIN_NAME"
+export TF_VAR_state_bucket="$STATE_BUCKET"
+TF_PLAN=".hub/.terraform/$DOMAIN_NAME.tfplan"
+TF_STATE=".hub/.terraform/$DOMAIN_NAME.tfstate"
+terraform="terraform-v0.12"
+
+test -d "$TF_DATA_DIR" || \
+  $terraform init .hub/cloud
+
+set +e
+$terraform plan -state=$TF_STATE -out=$TF_PLAN .hub/cloud
+tf_plan_rv="$?"
+set -e
+
+if test "$tf_plan_rv" == "2" || test -n "$FORCE"; then
+  (
+    set +e
+    cd .hub/cloud
+    $terraform import -state=$TF_STATE aws_s3_bucket.state "$STATE_BUCKET"
+    test "$?" = "0" && $terraform plan -state=$TF_STATE -out=$TF_PLAN
+    set -e
+  )
+  $terraform apply -auto-approve -state=$TF_STATE "$TF_PLAN"
+fi
+
+test -n "$SILENT" && cat << EOF
+
+* Updating DNS server to resolve: $DOMAIN_NAME
+
+EOF
+
+HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" -X PUT \
+      "https://api.agilestacks.io/dns/$DOMAIN_NAME" \
+      -H 'Content-Type: application/json;charset=UTF-8' \
+      -d "{\"key\": \"$DOMAIN_KEY\",\"nameservers\": $NS}")
+
+if test "$(echo $HTTP_CODE | cut -c1-1)" = "2"; then
+  test -n "$SILENT" && echo "Something went wrong. Please try again later!"
+  exit 2
+fi
+
+test -n "$SILENT" && echo "Done!"

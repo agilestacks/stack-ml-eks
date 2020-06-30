@@ -1,0 +1,110 @@
+#!/bin/bash -e
+# shellcheck disable=SC2068,SC2086,SC2155
+
+usage() {
+  cat << EOF
+
+Usage: $(basename "$0") checks if hub CLI infrastructure
+
+Parameters:
+    --aws-region          AWS Region
+    --aws-profile         AWS Profile
+    --refresh-tf          Reconsile terraform state with real world
+    -s  --silent          Suppress console outputs in favor of result codes
+EOF
+}
+
+SILENT=${SILENT:-false}
+
+# shellcheck disable=SC1091
+test -f ".env" && source ".env"
+
+test -z "$@" && while [ "$1" != "" ]; do
+    case $1 in
+        --aws-region )    shift
+                          export AWS_REGION="$1"
+                          ;;
+        --aws-profile )   shift
+                          export AWS_PROFILE="$1"
+                          ;;
+        -S | --silent )   SILENT=true
+                          ;;
+        -h | --help )     usage
+                          exit
+                          ;;
+        * )               usage
+                          exit 1
+    esac
+    shift
+done
+
+if $SILENT; then
+  GUIDE=false
+else 
+  GUIDE=${GUIDE:-true}
+fi
+
+$SILENT || echo "Checking AWS account prerequisites:"
+if test -f ".env"; then
+  $SILENT || echo " * Configuration file .env exists: YES"
+else
+  $GUIDE && cat << EOF
+* Configuration file .env exists: YES
+
+To resolve the problem please run: 
+
+$ hub stack configure --kubecontext -
+
+EOF
+  exit 255
+fi
+
+export AWS_DEFAULT_OUTPUT=text
+
+bucket_exists() {
+  aws s3api head-bucket --bucket="$1" 2>/dev/null
+}
+
+hosted_zone_exists() {
+  test -n "$(aws route53 list-hosted-zones \
+    --query 'HostedZones[?Name==`'$1'.`].Id' \
+    | xargs | cut -d " " -f1)"
+}
+
+
+$SILENT || echo -n " * s3 bucket $STATE_BUCKET exists: "
+SUCCESS=true
+if bucket_exists "$STATE_BUCKET"; then
+  $SILENT || echo "YES"
+else 
+  SUCCESS=false
+  $SILENT || echo "NO"
+fi
+
+$SILENT || echo -n " * route53 hosted zone $DOMAIN_NAME exists: "
+if hosted_zone_exists "${DOMAIN_NAME:-$PLATFORM_NAME.$BASE_DOMAIN}"; then
+  $SILENT || echo "YES"
+else 
+  # shellcheck disable=SC2034
+  SUCCESS=false
+  $SILENT || echo "NO"
+fi
+
+if ! $SUCCESS; then 
+  $GUIDE && cat << EOF
+
+To resolve the problem please run: 
+
+$ hub configure --kubecontext -
+
+EOF
+  exit 255
+fi
+
+$GUIDE && cat << EOF
+
+Your AWS infrastructure is up to date. Ready to run:
+
+$ hub ext stack deploy
+
+EOF

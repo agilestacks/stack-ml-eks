@@ -1,0 +1,60 @@
+version: 1
+kind: stack
+meta:
+  name: Machine Learning stack
+  brief: Stack that contains Kubeflow and ready to work for Data Scientist
+components:
+  - name: tiller
+    source:
+      dir: components/tiller
+      git:
+        remote: 'https://github.com/agilestacks/components.git'
+        ref: master
+        subDir: tiller
+  - name: storage-class
+    source:
+      dir: components/storage-class
+      git:
+        remote: 'https://github.com/agilestacks/components.git'
+        ref: master
+        subDir: storage-class
+  - name: external-dns
+    source:
+      dir: components/external-dns
+      git:
+        remote: 'https://github.com/agilestacks/components.git'
+        ref: master
+        subDir: external-dns
+  - name: cert-manager
+    source:
+      dir: components/cert-manager
+      git:
+        remote: 'https://github.com/agilestacks/components.git'
+        ref: master
+        subDir: cert-manager
+  - name: traefik
+    source:
+      dir: components/traefik
+      git:
+        remote: 'https://github.com/agilestacks/components.git'
+        ref: master
+        subDir: traefik
+
+requires:
+  - aws
+lifecycle:
+  verbs:
+    - deploy
+    - undeploy
+  order:
+    - tiller
+    - storage-class
+    - external-dns
+    - cert-manager
+    - traefik
+  mandatory:
+    - tiller
+    - storage-class
+    - external-dns
+    - cert-manager
+    - traefik

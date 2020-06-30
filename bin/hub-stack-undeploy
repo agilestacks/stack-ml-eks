@@ -1,0 +1,74 @@
+#!/bin/bash -ex
+# shellcheck disable=SC2086
+
+usage() {
+cat << EOF
+
+Deploys this stack
+
+Usage: 
+$ $(basename "$0")
+
+Deploys all components
+
+$ $(basename "$0") -c component1,component2
+Deploys deploys two components 
+
+Parameters:
+    -c --component     List of components to deploy
+    -o --offset        Deploy starting with the given component
+
+EOF
+}
+
+while [ "$1" != "" ]; do
+    case $1 in
+        -c | --component )  shift
+                            HUB_UNDEPLOY_OPTS="$HUB_UNDEPLOY_OPTS -c $1"
+                            ;;
+        -o | --offset )     shift
+                            HUB_UNDEPLOY_OPTS="$HUB_UNDEPLOY_OPTS -o $1"
+                            ;;
+        -h | --help )       usage
+                            exit
+                            ;;
+        * )                 usage
+                            exit 1
+    esac
+    shift
+done
+
+if [[ ! -f .env ]]; then
+  cat << EOF
+Configuration has not been found. Run 
+
+$ hub ext stack configure --context <kube-context>
+
+EOF
+  exit 1
+fi
+# shellcheck disable=SC1091
+source .env
+
+HUB_ELABORATE_FILE=".hub/hub.elaborate"
+HUB_STATE_FILE=".hub/hub.state"
+
+cat << EOF
+
+Undeploying: $PLATFORM_NAME.$BASE_DOMAIN"
+
+EOF
+
+HUB_ELABORATE_FILE=".hub/hub.elaborate"
+HUB_STATE_FILE=".hub/hub.state"
+
+if test -f "$HUB_STATE_FILE"; then
+  HUB_ELABORATE_OPTS="$HUB_ELABORATE_OPTS -s $HUB_STATE_FILE"
+fi
+
+HUB_UNDEPLOY_OPTS="--force --clouds=aws $HUB_UNDEPLOY_OPTS"
+
+test -f "$HUB_ELABORATE_FILE" ||
+  hub elaborate hub.yaml params.yaml -o "$HUB_ELABORATE_FILE" $HUB_ELABORATE_OPTS
+
+hub undeploy $HUB_UNDEPLOY_OPTS "$HUB_ELABORATE_FILE"

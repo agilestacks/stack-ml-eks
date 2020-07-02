@@ -39,6 +39,34 @@ components:
         remote: 'https://github.com/agilestacks/components.git'
         ref: master
         subDir: traefik
+  - name: dex
+    source:
+      dir: components/dex
+      git:
+        remote: 'https://github.com/agilestacks/components.git'
+        ref: master
+        subDir: dex
+  - name: prometheus
+    source:
+      dir: components/prometheus-operator
+      git:
+        remote: 'https://github.com/agilestacks/components.git'
+        ref: master
+        subDir: prometheus-operator
+  - name: istio
+    source:
+      dir: components/istio
+      git:
+        remote: 'https://github.com/agilestacks/components.git'
+        ref: master
+        subDir: istio
+  - name: kubeflow
+    source:
+      dir: components/kubeflow-v1.0
+      git:
+        remote: 'https://github.com/agilestacks/components.git'
+        ref: master
+        subDir: kubeflow-v1.0
 
 requires:
   - aws
@@ -52,9 +80,15 @@ lifecycle:
     - external-dns
     - cert-manager
     - traefik
+    - dex
+    - prometheus
+    - istio
+    - kubeflow
   mandatory:
     - tiller
     - storage-class
     - external-dns
     - cert-manager
     - traefik
+    - dex
+    - kubeflow

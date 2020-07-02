@@ -1,6 +1,6 @@
 .env
-hub.state
-hub.elaborate
 *.bubble
 *.env
 *.kubeconfig
+*.state
+*.elaborate

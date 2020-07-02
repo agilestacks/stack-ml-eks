@@ -11,15 +11,18 @@ Parameters:
     --aws-profile         AWS Profile
     --refresh-tf          Reconsile terraform state with real world
     -s  --silent          Suppress console outputs in favor of result codes
+    --skip-guide          Suppress "what's next" message
+    -g  --help            Print this message
 EOF
 }
 
 SILENT=${SILENT:-false}
+GUIDE=${GUIDE:-true}
 
 # shellcheck disable=SC1091
 test -f ".env" && source ".env"
 
-test -z "$@" && while [ "$1" != "" ]; do
+while [ "$1" != "" ]; do
     case $1 in
         --aws-region )    shift
                           export AWS_REGION="$1"
@@ -28,6 +31,10 @@ test -z "$@" && while [ "$1" != "" ]; do
                           export AWS_PROFILE="$1"
                           ;;
         -S | --silent )   SILENT=true
+                          ;;
+        --skip-guide  )   GUIDE=false
+                          ;;
+        -V | --verbose )  set -x
                           ;;
         -h | --help )     usage
                           exit
@@ -40,8 +47,6 @@ done
 
 if $SILENT; then
   GUIDE=false
-else 
-  GUIDE=${GUIDE:-true}
 fi
 
 $SILENT || echo "Checking AWS account prerequisites:"
@@ -49,14 +54,16 @@ if test -f ".env"; then
   $SILENT || echo " * Configuration file .env exists: YES"
 else
   $GUIDE && cat << EOF
-* Configuration file .env exists: YES
+* Configuration file .env exists: NO
 
-To resolve the problem please run: 
+***
 
-$ hub stack configure --kubecontext -
+To resolve please run: 
+
+$ hub stack configure --current-kube-context
 
 EOF
-  exit 255
+  exit 2
 fi
 
 export AWS_DEFAULT_OUTPUT=text
@@ -93,15 +100,25 @@ fi
 if ! $SUCCESS; then 
   $GUIDE && cat << EOF
 
-To resolve the problem please run: 
+***
 
-$ hub configure --kubecontext -
+## What's next?
+
+One or multiple prerequisites has not been deployed
+
+To resolve, please run: 
+
+$ hub ext aws init
 
 EOF
-  exit 255
+  exit 3
 fi
 
 $GUIDE && cat << EOF
+
+***
+
+## What's next?
 
 Your AWS infrastructure is up to date. Ready to run:
 

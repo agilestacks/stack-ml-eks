@@ -42,7 +42,7 @@ if [[ ! -f .env ]]; then
   cat << EOF
 Configuration has not been found. Run 
 
-$ hub ext stack configure --context <kube-context>
+$ hub configure --kubecontext <kube-context>
 
 EOF
   exit 1
@@ -50,17 +50,16 @@ fi
 # shellcheck disable=SC1091
 source .env
 
-HUB_ELABORATE_FILE=".hub/hub.elaborate"
-HUB_STATE_FILE=".hub/hub.state"
+DOMAIN_NAME="$PLATFORM_NAME.$BASE_DOMAIN"
+HUB_ELABORATE_FILE=".hub/$DOMAIN_NAME.elaborate"
+HUB_STATE_FILE=".hub/$DOMAIN_NAME.state"
 
 cat << EOF
+Undeploying: $DOMAIN_NAME"
 
-Undeploying: $PLATFORM_NAME.$BASE_DOMAIN"
+Warning: this operation cannot be reverted! It may lead to data loss!
 
 EOF
-
-HUB_ELABORATE_FILE=".hub/hub.elaborate"
-HUB_STATE_FILE=".hub/hub.state"
 
 if test -f "$HUB_STATE_FILE"; then
   HUB_ELABORATE_OPTS="$HUB_ELABORATE_OPTS -s $HUB_STATE_FILE"

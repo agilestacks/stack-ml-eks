@@ -1,4 +1,4 @@
-#!/bin/bash -ex
+#!/bin/bash -e
 # shellcheck disable=SC2086
 
 usage() {
@@ -17,10 +17,12 @@ Deploys deploys two components
 Parameters:
     -c --component     List of components to deploy
     -o --offset        Deploy starting with the given component
-
+    -S --silent        Suppress all outputs
+    -V --veerbose      Provides verbosity for debug purposes
 EOF
 }
 
+SILENT=false
 while [ "$1" != "" ]; do
     case $1 in
         -c | --component )  shift
@@ -28,6 +30,12 @@ while [ "$1" != "" ]; do
                             ;;
         -o | --offset )     shift
                             HUB_UNDEPLOY_OPTS="$HUB_UNDEPLOY_OPTS -o $1"
+                            ;;
+        -S | --silent )     SILENT=true
+                            ;;
+        -V | --verbose )    set -x
+                            export HUB_TRACE=1
+                            export HUB_DEBUG=1
                             ;;
         -h | --help )       usage
                             exit
@@ -38,8 +46,8 @@ while [ "$1" != "" ]; do
     shift
 done
 
-if [[ ! -f .env ]]; then
-  cat << EOF
+if ! test -f .env; then
+  $SILENT || cat << EOF
 Configuration has not been found. Run 
 
 $ hub configure --kubecontext <kube-context>
@@ -53,6 +61,7 @@ source .env
 DOMAIN_NAME="$PLATFORM_NAME.$BASE_DOMAIN"
 HUB_ELABORATE_FILE=".hub/$DOMAIN_NAME.elaborate"
 HUB_STATE_FILE=".hub/$DOMAIN_NAME.state"
+HUB_UNDEPLOY_OPTS="--force --clouds=aws $HUB_UNDEPLOY_OPTS"
 
 cat << EOF
 Undeploying: $DOMAIN_NAME"
@@ -61,13 +70,23 @@ Warning: this operation cannot be reverted! It may lead to data loss!
 
 EOF
 
-if test -f "$HUB_STATE_FILE"; then
-  HUB_ELABORATE_OPTS="$HUB_ELABORATE_OPTS -s $HUB_STATE_FILE"
+$SILENT || echo " * Using cluster: $DOMAIN_NAME"
+if ! test -f "$HUB_ELABORATE_FILE"; then
+  $SILENT || echo "Error: cannot find hub elaborate file: $HUB_ELABORATE_FILE"
+  exit 2
 fi
 
-HUB_UNDEPLOY_OPTS="--force --clouds=aws $HUB_UNDEPLOY_OPTS"
+$SILENT || echo " * Using hub elaborate file: $HUB_ELABORATE_FILE"
 
-test -f "$HUB_ELABORATE_FILE" ||
-  hub elaborate hub.yaml params.yaml -o "$HUB_ELABORATE_FILE" $HUB_ELABORATE_OPTS
+if test -f "$HUB_STATE_FILE"; then
+  HUB_UNDEPLOY_OPTS="$HUB_UNDEPLOY_OPTS -s $HUB_STATE_FILE"
+  $SILENT || echo " * Using hub state file: $HUB_STATE_FILE"  
+fi
+
+cat <<EOF
+
+### Proceed with undeploy operation
+
+EOF
 
 hub undeploy $HUB_UNDEPLOY_OPTS "$HUB_ELABORATE_FILE"

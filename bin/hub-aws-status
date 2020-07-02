@@ -12,6 +12,7 @@ Parameters:
     --refresh-tf          Reconsile terraform state with real world
     -s  --silent          Suppress console outputs in favor of result codes
     --skip-guide          Suppress "what's next" message
+    -V --verbose          Provides verbosity for debug purposes
     -g  --help            Print this message
 EOF
 }
@@ -88,8 +89,9 @@ else
   $SILENT || echo "NO"
 fi
 
+DOMAIN_NAME="${DOMAIN_NAME:-$PLATFORM_NAME.$BASE_DOMAIN}"
 $SILENT || echo -n " * route53 hosted zone $DOMAIN_NAME exists: "
-if hosted_zone_exists "${DOMAIN_NAME:-$PLATFORM_NAME.$BASE_DOMAIN}"; then
+if hosted_zone_exists "$DOMAIN_NAME"; then
   $SILENT || echo "YES"
 else 
   # shellcheck disable=SC2034

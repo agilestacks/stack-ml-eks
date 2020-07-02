@@ -18,7 +18,7 @@ Parameters:
     -c --component     List of components to deploy
     -o --offset        Deploy starting with the given component
     -S --silent        Suppress all outputs
-    -V --veerbose      Provides verbosity for debug purposes
+    -V --verbose       Provides verbosity for debug purposes
 EOF
 }
 

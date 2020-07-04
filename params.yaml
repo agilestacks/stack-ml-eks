@@ -1,4 +1,3 @@
----
 parameters:
 - name: cloud
   brief: Cloud
@@ -14,22 +13,22 @@ parameters:
   parameters:
   - name: name
     brief: DNS name
-    fromEnv: PLATFORM_NAME
-  - name: baseDomain
-    brief: DNS base domain
-    fromEnv: BASE_DOMAIN
-    default: superhub.io
+    fromEnv: HUB_STACK_NAME
+  # - name: baseDomain
+  #   brief: DNS base domain
+  #   fromEnv: BASE_DOMAIN
+  #   default: devops.delivery
   - name: domain
-    value: ${dns.name}.${dns.baseDomain}
+    fromEnv: HUB_DOMAIN_NAME
 - name: component.storage-class.name
   value: default
 - name: terraform.bucket
   brief: Terraform state location
   parameters:
   - name: name
-    fromEnv: STATE_BUCKET
+    fromEnv: HUB_STATE_BUCKET
   - name: region
-    fromEnv: STATE_REGION
+    fromEnv: HUB_STATE_REGION
 - name: component.ingress
   parameters:
   - name: dashboard
@@ -59,7 +58,32 @@ parameters:
       env: HUB_DEX_USER
     - name: 0.password
       value: 12341234
-      env: PLAIN_PASS
+  # - name: objectstore.endpoint
+  #   value: ${component.bucket.endpoint.internal}
+  # - name: objectstore.accessKey
+  #   value: ${component.minio.accessKey}
+  # - name: objectstore.secretKey
+  #   value:  ${component.minio.secretKey}
+  # - name: objectstore.region
+  #   value: ${component.bucket.region}
+  # - name: objectstore.bucket
+  #   value: kubeflow
+- name: component.minio
+  kind: user
+  parameters: 
+  - name: accessKey
+    value: minio
+  - name: secretKey
+    value: minio123
+  - name: region
+    # minio default region
+    value: us-east-1
+
+# consumed by kubeflow
+- name: component.bucket.accessKey
+  value: ${component.minio.accessKey}
+- name: component.bucket.secretKey
+  value: ${component.minio.secretKey}
 
 - name: component.prometheus
   parameters: 
@@ -74,4 +98,16 @@ parameters:
     value: https://auth.${dns.domain}
   - name: namespace
     value: kube-system
+outputs:
+- name: component.kubeflow.url
+  brief: Kubeflow Central Dashboard
+  value: hthtp://${component.kubeflow.name}.${dns.domain}/
+- name: component.minio.url
+  brief: Minio Endpoint
+- name: component.istio.kiali.url
+  brief: Istio Kiali
+- name: component.prometheus.url
+  brief: Prometheus Dashboard
+- name: component.ingress.dashboard.url
+  value: Traefik Dashboard
 

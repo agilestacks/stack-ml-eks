@@ -32,13 +32,13 @@ components:
         remote: 'https://github.com/agilestacks/components.git'
         ref: master
         subDir: cert-manager
-  - name: traefik
+  - name: traefik2
     source:
-      dir: components/traefik
+      dir: components/traefik2
       git:
         remote: 'https://github.com/agilestacks/components.git'
         ref: master
-        subDir: traefik
+        subDir: traefik2
   - name: dex
     source:
       dir: components/dex
@@ -60,6 +60,13 @@ components:
         remote: 'https://github.com/agilestacks/components.git'
         ref: master
         subDir: istio
+  - name: minio
+    source:
+      dir: components/minio
+      git:
+        remote: 'https://github.com/agilestacks/components.git'
+        ref: master
+        subDir: minio
   - name: kubeflow
     source:
       dir: components/kubeflow-v1.0
@@ -79,16 +86,17 @@ lifecycle:
     - storage-class
     - external-dns
     - cert-manager
-    - traefik
+    - traefik2
     - dex
     - prometheus
     - istio
+    - minio
     - kubeflow
   mandatory:
     - tiller
     - storage-class
     - external-dns
     - cert-manager
-    - traefik
+    - traefik2
     - dex
     - kubeflow

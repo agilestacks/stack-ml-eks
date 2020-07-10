@@ -58,32 +58,47 @@ parameters:
       env: HUB_DEX_USER
     - name: 0.password
       value: 12341234
-  # - name: objectstore.endpoint
-  #   value: ${component.bucket.endpoint.internal}
-  # - name: objectstore.accessKey
-  #   value: ${component.minio.accessKey}
-  # - name: objectstore.secretKey
-  #   value:  ${component.minio.secretKey}
-  # - name: objectstore.region
-  #   value: ${component.bucket.region}
-  # - name: objectstore.bucket
-  #   value: kubeflow
 - name: component.minio
   kind: user
   parameters: 
+  - name: name
+    value: buckets
+  - name: namespace
+    value: kubeflow
   - name: accessKey
     value: minio
   - name: secretKey
     value: minio123
   - name: region
-    # minio default region
     value: us-east-1
 
 # consumed by kubeflow
-- name: component.bucket.accessKey
-  value: ${component.minio.accessKey}
-- name: component.bucket.secretKey
-  value: ${component.minio.secretKey}
+- name: component.bucket
+  component: kubeflow
+  parameters:
+  - name: accessKey
+    value: ${component.minio.accessKey}
+  - name: secretKey
+    value: ${component.minio.secretKey}
+  - name: name
+    value: ${component.kubeflow.name}-pipelines
+
+- name: component.mysql
+  parameters:
+  - name: namespace
+    value: kubeflow
+  - name: databasee
+    value: mlpipeline
+  - name: user
+    value: scott
+  - name: password
+    # randomly generated
+    value: b51b79dde371454d9d3c91e3b07fc651
+  - name: rootPassword
+    # randomly generated
+    value: 7b4cc3facd9f408baf685d068c850bd8
+  - name: volumeSize
+    value: 8Gi
 
 - name: component.prometheus
   parameters: 
@@ -101,7 +116,6 @@ parameters:
 outputs:
 - name: component.kubeflow.url
   brief: Kubeflow Central Dashboard
-  value: hthtp://${component.kubeflow.name}.${dns.domain}/
 - name: component.minio.url
   brief: Minio Endpoint
 - name: component.istio.kiali.url
@@ -110,4 +124,3 @@ outputs:
   brief: Prometheus Dashboard
 - name: component.ingress.dashboard.url
   value: Traefik Dashboard
-

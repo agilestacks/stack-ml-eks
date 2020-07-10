@@ -39,6 +39,12 @@ components:
         remote: 'https://github.com/agilestacks/components.git'
         ref: master
         subDir: traefik2
+  - name: tls-host-controller
+    source:
+      dir: components/tls-host-controller
+      git:
+        remote: 'https://github.com/agilestacks/tls-host-controller.git'
+        ref: master
   - name: dex
     source:
       dir: components/dex
@@ -53,6 +59,13 @@ components:
         remote: 'https://github.com/agilestacks/components.git'
         ref: master
         subDir: prometheus-operator
+  - name: mysql
+    source:
+      dir: components/mysql
+      git:
+        remote: 'https://github.com/agilestacks/components.git'
+        ref: master
+        subDir: mysql
   - name: istio
     source:
       dir: components/istio
@@ -87,16 +100,19 @@ lifecycle:
     - external-dns
     - cert-manager
     - traefik2
+    - tls-host-controller
     - dex
     - prometheus
     - istio
+    - mysql
     - minio
     - kubeflow
   mandatory:
     - tiller
-    - storage-class
     - external-dns
-    - cert-manager
     - traefik2
     - dex
+    - istio
+    - mysql
+    - minio
     - kubeflow

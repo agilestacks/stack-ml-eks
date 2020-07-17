@@ -70,6 +70,17 @@ iam:
         # - "sts:AssumeRoleWithWebIdentity"
         Resource: '*'
 
+      # User notebook policy
+      # This is often needed by data scientists
+      # Who stores data in s3 and need quite powerful access
+      # And pushes intermediate containers for distributed training to ECR
+      - Effect: Allow
+        Action:
+        - "s3:*" 
+        - "ecr:*"
+        - "cloudtrail:LookupEvents"
+        Resource: '*'
+
 cloudWatch:
   clusterLogging:
     enableTypes:

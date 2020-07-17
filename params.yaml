@@ -64,13 +64,15 @@ parameters:
   - name: name
     value: buckets
   - name: namespace
-    value: kubeflow
+    value: ${component.kubeflow.namespace}
   - name: accessKey
     value: minio
   - name: secretKey
     value: minio123
   - name: region
-    value: us-east-1
+    value: ${cloud.region}
+  - name: default.bucket.name
+    value: ${component.kubeflow.name}-pipelines
 
 # consumed by kubeflow
 - name: component.bucket
@@ -81,12 +83,13 @@ parameters:
   - name: secretKey
     value: ${component.minio.secretKey}
   - name: name
-    value: ${component.kubeflow.name}-pipelines
+    value: ${component.minio.default.bucket.name}
 
 - name: component.mysql
+  kind: user
   parameters:
   - name: namespace
-    value: kubeflow
+    value: ${component.kubeflow.namespace}
   - name: databasee
     value: mlpipeline
   - name: user
@@ -100,12 +103,30 @@ parameters:
   - name: volumeSize
     value: 8Gi
 
+- name: component.mysql.user
+  component: kubeflow
+  value: root
+- name: component.mysql.password
+  component: kubeflow
+  value: ${component.mysql.rootPassword}
+    # value: 7b4cc3facd9f408baf685d068c850bd8
+- name: component.bucket.endpoint
+  component: kubeflow
+  value: http://${component.minio.name}.${component.minio.namespace}.svc.cluster.local:9000
+- name: component.bucket.endpoint
+  component: s3-flex-pvc
+  value: http://${component.minio.name}.${component.minio.namespace}.svc.cluster.local:9000
+
+
 - name: component.prometheus
   parameters: 
   - name: prometheus.volumeSize
     value: 12Gi
   - name: prometheus.retention
     value: 4h
+
+- name:  component.s3flex.namespace
+  value: ${component.kubeflow.namespace}
 
 - name: component.dex
   parameters: 

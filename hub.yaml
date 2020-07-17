@@ -88,6 +88,21 @@ components:
         ref: master
         subDir: kubeflow-v1.0
 
+  - name: s3-flex-driver
+    source:
+      dir: components/s3fs
+      git:
+        remote: 'https://github.com/agilestacks/applications.git'
+        ref: master
+        subDir: components/s3fs
+  - name: s3-flex-pvc
+    source:
+      dir: components/s3fs/pvc
+      git:
+        remote: 'https://github.com/agilestacks/applications.git'
+        ref: master
+        subDir: components/s3fs-pvc
+
 requires:
   - aws
 lifecycle:
@@ -106,6 +121,8 @@ lifecycle:
     - istio
     - mysql
     - minio
+    - s3-flex-driver
+    - s3-flex-pvc
     - kubeflow
   mandatory:
     - tiller

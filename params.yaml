@@ -125,8 +125,15 @@ parameters:
   - name: prometheus.retention
     value: 4h
 
-- name:  component.s3flex.namespace
-  value: ${component.kubeflow.namespace}
+- name: component.external-dns.interval
+  value: 3m
+- name: component.s3flex
+  parameters:
+  - name: driver.namespace
+    value: ${component.kubeflow.namespace}
+  - name: pvc.namespace
+    value: workspace
+    # value: ${component.kubeflow.namespace}
 
 - name: component.dex
   parameters: 

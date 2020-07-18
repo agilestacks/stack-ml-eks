@@ -1,10 +1,10 @@
 # ML Stack on EKS
 
-ML Stack is designed to simplify the deployment of machine learning projects like Kubeflow on AWS EKS.  It supports the full lifecycle of an ML application and automates deployment of the following tools and frameworks: Kubeflow, Tensorflow, Pytorch, XGBoost, Jupyter Notebook, TensorBoard, Seldon, Minio, Spark, Amazon SageMaker.
+ML Stack is designed to simplify the deployment of [Kubeflow](https://github.com/kubeflow) and additional components on AWS EKS.  It supports the full lifecycle of machine learning projects: data preparation, model development, training, serving, and monitoring.
 
 ## Installation
 
-A new EKS cluster can be created using the [eksctl](https://docs.aws.amazon.com/eks/latest/userguide/eksctl.html) tool and the provided configuration file: [etc/eks-cluster.yaml](etc/eks-cluster.yaml). If you already have an existing EKS cluster, please make sure that following addons are deployed: `certManager` and `externalDNS`.
+A new EKS cluster can be created using the [eksctl](https://docs.aws.amazon.com/eks/latest/userguide/eksctl.html) tool and the configuration file [etc/eks-cluster.yaml](etc/eks-cluster.yaml). If you already have an existing EKS cluster, please make sure that following addons are deployed: `certManager` and `externalDNS`.
 
 1. Create an EKS cluster
 

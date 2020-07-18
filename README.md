@@ -1,10 +1,10 @@
-# ML Stack for EKS
+# ML Stack on EKS
 
-Certified tack for Kubeflow at AWS EKS cluster
+ML Stack is designed to simplify the deployment of machine learning projects like Kubeflow on AWS EKS.  It supports the full lifecycle of an ML application and automates deployment of the following tools and frameworks: Kubeflow, Tensorflow, Pytorch, XGBoost, Jupyter Notebook, TensorBoard, Seldon, Minio, Spark, Amazon SageMaker.
 
 ## Installation
 
-It has been advised that EKS cluster has been created from the configuration file described [etc/eks-cluster.yaml](etc/eks-cluster.yaml). If you    have existing EKS cluster please make sure that following addons has been activated: `certManager` and `externalDNS`.
+A new EKS cluster can be created using the [eksctl](https://docs.aws.amazon.com/eks/latest/userguide/eksctl.html) tool and the provided configuration file: [etc/eks-cluster.yaml](etc/eks-cluster.yaml). If you already have an existing EKS cluster, please make sure that following addons are deployed: `certManager` and `externalDNS`.
 
 1. Create an EKS cluster
 
@@ -12,7 +12,7 @@ It has been advised that EKS cluster has been created from the configuration fil
 $ eksctl create cluster -f etc/eks-cluster.yaml
 ```
 
-Or create cluster with different name
+Or create cluster with a different name
 
 ```bash
 $ export STACK_NAME="better-name-for-my-cluster"
@@ -21,15 +21,15 @@ $ cat etc/eks-cluster.yaml \
   | eksctl create cluster -f -
 ```
 
-2. Setup prerequisites
+2. Configure prerequisites
 
 ```bash
 $ hub configure --current-kubecontext
 ```
 
-This command will benefit from current context in your kubeconfig (defined by `eksctl`) and generate necessary configuration and store in environment file (`.env` points to current active configuration)
+This command will your current kubeconfig context (defined by `eksctl`), generate the necessary configuration and store it in environment file (`.env` points to current active configuration)
 
-* Generate a unique domain name (valid for 24hours unless refreshed)
+* Generate a unique domain name (valid for 24 hours unless refreshed with `hub configure` command)
 * Domain name refresh key. A token that authorizes domain name refresh
 * Definition of AWS configuration (s3 bucket to store deployment state)
 
@@ -50,9 +50,9 @@ $ hub ext stack deploy
 
 ## What else I can do
 
-### Redeploy one or fiew components
+### Redeploy one or more components
 
-Redeoloy one or few compomnents. Command below will redeploy two components of a stack `istio` and `prometheus`
+Redeploy one or more compomnents. The following commands will redeploy two stack components: `istio` and `prometheus`
 
 ```bash
 $ hub ext stack undeploy -c istio,prometheus

@@ -3,16 +3,16 @@ kind: ClusterConfig
 
 metadata:
   name: happy-cluster
-  region: eu-west-1
+  region: us-east-1
 
 availabilityZones:
-- eu-west-1a
-- eu-west-1b
-- eu-west-1c
+- us-east-1a
+- us-east-1b
+- us-east-1c
 
 nodeGroups:
 - name: workers
-  minSize: 2
+  minSize: 3
   maxSize: 5
   instancesDistribution:
     instanceTypes:
@@ -29,7 +29,7 @@ nodeGroups:
   volumeType: gp2
   ssh:
     # allow: true # will use ~/.ssh/id_rsa.pub as the default ssh key
-    publicKeyPath: ~/.ssh/agilestacks.pub
+    # publicKeyPath: ~/.ssh/agilestacks.pub
   tags:
     k8s.io/cluster-autoscaler/enabled: "true"
     k8s.io/cluster-autoscaler/happy-cluster: "owned"

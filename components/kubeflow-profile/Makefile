@@ -3,10 +3,8 @@
 kubectl := kubectl --context="$(HUB_DOMAIN_NAME)"
 
 deploy:
-	$(kubectl) get -f profile.yaml || \
-		$(kubectl) apply -f profile.yaml
-	$(kubectl) get -f namespace.yaml || \
-		$(kubectl) apply -f namespace.yaml
+	$(kubectl) get -f profile.yaml   || $(kubectl) apply -f profile.yaml
+	$(kubectl) get -f namespace.yaml || $(kubectl) apply -f namespace.yaml
 
 drop-finalizers/%:
 	- $(kubectl) get -f $* -o json \

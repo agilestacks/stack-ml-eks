@@ -87,7 +87,9 @@ components:
         remote: 'https://github.com/agilestacks/components.git'
         ref: master
         subDir: kubeflow-v1.0
-
+  - name: kubeflow-profile
+    source:
+      dir: components/kubeflow-profile
   - name: s3-flex-driver
     source:
       dir: components/s3fs
@@ -105,6 +107,7 @@ components:
 
 requires:
   - aws
+  - kubernetes
 lifecycle:
   verbs:
     - deploy
@@ -122,8 +125,9 @@ lifecycle:
     - mysql
     - minio
     - s3-flex-driver
-    - s3-flex-pvc
     - kubeflow
+    - s3-flex-pvc
+    - kubeflow-profile
   mandatory:
     - tiller
     - external-dns

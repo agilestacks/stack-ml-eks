@@ -1,0 +1,35 @@
+---
+version: 1
+kind: component
+meta:
+  name: kubeflow-profile
+  title: Kubeflow Namespaace
+  brief: Machine learning
+  description: Creates a namespace (user profile) for a kubeflow user
+  category: AI and Machine Learning
+  version: 1.0.2
+  maturity: alpha
+  licence: Apache 2.0
+  source:
+    dir: ../../components/kubeflow-v1.0
+
+requires:
+- kubernetes
+
+parameters:
+- name: dns.domain
+  env: HUB_DOMAIN_NAME
+- name: component.dex.passwordDb.email
+  empty: allow
+- name: component.kubeflow.profile
+  parameters:
+  - name: name
+    value: workspace
+  - name: owner.username
+    value: ${component.dex.passwordDb.email}
+
+outputs: []
+
+templates:
+  files:
+  - "*.template"

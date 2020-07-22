@@ -51,13 +51,10 @@ parameters:
     value: kubeflow
   - name: namespace
     value: ${component.kubeflow.name}
-  - name: passwd
-    parameters:
-    - name: 0.user
-      value: admin@agilestacks.com
-      env: HUB_DEX_USER
-    - name: 0.password
-      value: 12341234
+  - name: profile.name
+    value: workspace
+  - name: profile.owner.username
+    value: ${component.dex.passwordDb.email}
 - name: component.minio
   kind: user
   parameters: 
@@ -117,7 +114,6 @@ parameters:
   component: s3-flex-pvc
   value: http://${component.minio.name}.${component.minio.namespace}.svc.cluster.local:9000
 
-
 - name: component.prometheus
   parameters: 
   - name: prometheus.volumeSize
@@ -141,6 +137,12 @@ parameters:
     value: https://auth.${dns.domain}
   - name: namespace
     value: kube-system
+  - name: passwordDb.email
+    value: admin@agilestacks.com
+  - name: passwordDb.passwordHash
+    # 12341234
+    value: $2y$12$yua.T4aIZ5IjJsYDCal4X.jy/516D.xkFJsSGQY/vfch5aeEJc012
+
 outputs:
 - name: component.kubeflow.url
   brief: Kubeflow Central Dashboard

@@ -1,0 +1,11 @@
+apiVersion: kubeflow.org/v1
+kind: Profile
+metadata:
+  finalizers:
+  - profile-finalizez
+  name: ${component.kubeflow.profile.name}
+spec:
+  owner:
+    kind: User
+    name: ${component.kubeflow.profile.owner.username}
+  resourceQuotaSpec: {}

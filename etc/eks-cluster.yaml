@@ -34,12 +34,20 @@ nodeGroups:
     k8s.io/cluster-autoscaler/enabled: "true"
     k8s.io/cluster-autoscaler/happy-cluster: "owned"
   iam:
+    # User notebook policy
+    # This is often needed by data scientists
+    # Who stores data in s3 and need quite powerful access
+    # And pushes intermediate containers for distributed training to ECR
+    attachPolicyARNs:
+    - arn:aws:iam::aws:policy/AmazonS3FullAccess
+    - arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryFullAccess
     withAddonPolicies:
       albIngress: true
       autoScaler: true
       cloudWatch: true
       certManager: true
       externalDNS: true
+      ebs: true
 
 iam:
   withOIDC: true
@@ -68,17 +76,6 @@ iam:
         - "s3:*Object"
         # Reserved for future OIDC integration
         # - "sts:AssumeRoleWithWebIdentity"
-        Resource: '*'
-
-      # User notebook policy
-      # This is often needed by data scientists
-      # Who stores data in s3 and need quite powerful access
-      # And pushes intermediate containers for distributed training to ECR
-      - Effect: Allow
-        Action:
-        - "s3:*" 
-        - "ecr:*"
-        - "cloudtrail:LookupEvents"
         Resource: '*'
 
 cloudWatch:

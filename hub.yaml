@@ -100,10 +100,6 @@ components:
   - name: s3-flex-pvc
     source:
       dir: components/s3fs/pvc
-      git:
-        remote: 'https://github.com/agilestacks/applications.git'
-        ref: master
-        subDir: components/s3fs-pvc
 
 requires:
   - aws

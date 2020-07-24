@@ -21,7 +21,17 @@ $ cat etc/eks-cluster.yaml \
   | eksctl create cluster -f -
 ```
 
-2. Configure prerequisites
+2. Attach sufficient IAM policies
+
+By default cluster has been provisioned with minimum viable rights to run majority of the pods. However if you are willing to add extra rights to allow pods in your cluster to add some resources then you might want to run following command. Please consider it as an example
+
+```
+$ hub ext eks attach policy \
+  --cluster "$STACK_NAME" \
+  --policy "AmazonS3FullAccess"
+```
+
+3. Configure prerequisites
 
 ```bash
 $ hub configure --current-kubecontext
@@ -33,7 +43,7 @@ This command will your current kubeconfig context (defined by `eksctl`), generat
 * Domain name refresh key. A token that authorizes domain name refresh
 * Definition of AWS configuration (s3 bucket to store deployment state)
 
-3. Install prerequisites (one time operation)
+4. Install prerequisites (one time operation)
 
 Before you deploy a cluster, we need to be sure that prerequisites defined in configure steps are met
 
@@ -42,7 +52,7 @@ $ hub ext aws status
 $ hub ext aws init
 ```
 
-4. Deploy current stack
+5. Deploy current stack
 
 ```bash
 $ hub ext stack deploy
@@ -59,7 +69,6 @@ $ hub ext stack undeploy -c istio,prometheus
 $ hub ext stack deploy -c istio,prometheus
 ```
 
-
 ### Deploy all components from...
 
 Deploy specified component and all following components in the runlist
@@ -74,6 +83,7 @@ If you have used a default name to setup your cluster then please use command be
 
 ```bash
 $ hub ext stack undeploy
+$ hub ext eks detach policy --cluster $STACK_NAME --all
 $ eksctl delete cluster -f etc/eks-cluster.yaml
 ```
 

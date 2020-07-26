@@ -23,7 +23,7 @@ $ cat etc/eks-cluster.yaml \
 
 2. Attach sufficient IAM policies
 
-By default cluster has been provisioned with minimum viable rights to run majority of the pods. However if you are willing to add extra rights to allow pods in your cluster to add some resources then you might want to run following command. Please consider it as an example
+By default, the cluster is provisioned with a minimum set of permissions required to run the majority of the pods.  If you need to add more permissions for the cluster, you can attach additional IAM policies.  Use the following command as an example for adding standard IAM policies to your cluster:
 
 ```
 $ hub ext eks attach policy \
@@ -34,10 +34,10 @@ $ hub ext eks attach policy \
 3. Configure prerequisites
 
 ```bash
-$ hub configure --current-kubecontext
+$ hub configure --current-kubecontext --force
 ```
 
-This command will your current kubeconfig context (defined by `eksctl`), generate the necessary configuration and store it in environment file (`.env` points to current active configuration)
+This command will use your current kubeconfig context (defined by `eksctl`), generate the necessary configuration and store it in an environment file (`.env` points to current active configuration)
 
 * Generate a unique domain name (valid for 24 hours unless refreshed with `hub configure` command)
 * Domain name refresh key. A token that authorizes domain name refresh
@@ -58,7 +58,19 @@ $ hub ext aws init
 $ hub ext stack deploy
 ```
 
-## What else I can do
+## Access the Kubeflow user interface (UI)
+After the stacks is deployed, the Kubeflow Dashboard can be accessed via istio-ingressgateway service.  You can find the URL of deployed gateway using `kubectl` command:
+```bash
+$ kubectl get gateways --all-namespaces -o yaml
+```
+The URL for Kubeflow dashboard is shown in the `hosts` section for the following Istio gateway: 
+`name: kubeflow-gateway`
+To confirm the ingress gateway is serving the application to the load balancer, use:
+```bash
+$ curl http://kubeflow.example.devops.delivery:80/
+```
+
+## Additional Options
 
 ### Redeploy one or more components
 
@@ -69,9 +81,9 @@ $ hub ext stack undeploy -c istio,prometheus
 $ hub ext stack deploy -c istio,prometheus
 ```
 
-### Deploy all components from...
+### Deploy all components starting from the pre-deployed component
 
-Deploy specified component and all following components in the runlist
+Deploy the specified component and all subsequent components in the stack runlist.
 
 ```bash
 $ hub ext stack deploy -o istio
@@ -79,7 +91,7 @@ $ hub ext stack deploy -o istio
 
 ## Tear Down
 
-If you have used a default name to setup your cluster then please use command below:
+If you have used a default name to setup your cluster then you can use the following command to undeploy the entire stack:
 
 ```bash
 $ hub ext stack undeploy
@@ -87,7 +99,7 @@ $ hub ext eks detach policy --cluster $STACK_NAME --all
 $ eksctl delete cluster -f etc/eks-cluster.yaml
 ```
 
-Or otherwise this command when name derived has been reconfigured by variable `STACK_NAME`
+Otherwise, use the following command if the stack name was configured with variable `STACK_NAME`:
 
 ```bash
 $ eksctl delete cluster --name="$STACK_NAME"

@@ -39,6 +39,8 @@ nodeGroups:
     # Who stores data in s3 and need quite powerful access
     # And pushes intermediate containers for distributed training to ECR
     attachPolicyARNs:
+    - arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy
+    - arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy
     - arn:aws:iam::aws:policy/AmazonS3FullAccess
     - arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryFullAccess
     withAddonPolicies:

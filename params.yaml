@@ -57,7 +57,7 @@ parameters:
     value: ${component.dex.passwordDb.email}
 - name: component.minio
   kind: user
-  parameters: 
+  parameters:
   - name: name
     value: buckets
   - name: namespace
@@ -115,7 +115,7 @@ parameters:
   value: http://${component.minio.name}.${component.minio.namespace}.svc.cluster.local:9000
 
 - name: component.prometheus
-  parameters: 
+  parameters:
   - name: prometheus.volumeSize
     value: 12Gi
   - name: prometheus.retention
@@ -132,7 +132,7 @@ parameters:
     # value: ${component.kubeflow.namespace}
 
 - name: component.dex
-  parameters: 
+  parameters:
   - name: issuer
     value: https://auth.${dns.domain}
   - name: namespace
@@ -153,4 +153,4 @@ outputs:
 - name: component.prometheus.url
   brief: Prometheus Dashboard
 - name: component.ingress.dashboard.url
-  value: Traefik Dashboard
+  brief: Traefik Dashboard

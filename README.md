@@ -1,6 +1,6 @@
 # ML Stack on EKS
 
-ML Stack is designed to simplify the deployment of [Kubeflow](https://github.com/kubeflow) and additional components on AWS EKS.  It supports the full lifecycle of machine learning projects: data preparation, model development, training, serving, and monitoring.
+ML Stack is designed to simplify the deployment of [Kubeflow](https://github.com/kubeflow) and additional components on AWS EKS.  It supports the full lifecycle of machine learning projects: data preparation, model development, training, serving, and monitoring.  ML Stack is providing essential tools to improve productivity of data scientists, while making it easy for operations to deploy and scale machine learning applications in production.
 
 ## ML Stack Components
 

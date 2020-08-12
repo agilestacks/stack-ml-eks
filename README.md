@@ -67,7 +67,7 @@ $ hub ext stack deploy
 ```
 
 ## Access the Kubeflow user interface (UI)
-After the stacks is deployed, the Kubeflow Dashboard can be accessed via istio-ingressgateway service.  You can find the URL of deployed gateway in the stack outputs or using the `kubectl` command:
+After the stack is deployed, the Kubeflow Dashboard can be accessed via istio-ingressgateway service.  You can find the URL of deployed gateway in the stack outputs or using the `kubectl` command:
 ```bash
 $ kubectl get gateways --all-namespaces -o yaml
 ```
@@ -78,6 +78,25 @@ To confirm the ingress gateway is serving the application to the load balancer, 
 ```bash
 $ curl http://kubeflow.example.devops.delivery:80/
 ```
+
+## Verify Kubeflow Deployment
+
+Congratulations, you have just deployed Kubeflow! To make sure that all Kubeflow services are running as expected, you can use the following Kubeflow example [MNIST Example] (https://github.com/kubeflow/examples/tree/master/mnist)
+
+1. Launch a Jupyter notebook
+
+The tutorial has been tested using the Jupyter Tensorflow 1.15 image.
+
+Launch a terminal in Jupyter and clone the kubeflow examples repo:
+
+```
+git clone https://github.com/kubeflow/examples.git git_kubeflow-examples
+```
+
+2. Open the notebook mnist/mnist_aws.ipynb
+
+3. Follow the notebook to train and deploy MNIST model on Kubeflow
+
 
 ## Additional Options
 

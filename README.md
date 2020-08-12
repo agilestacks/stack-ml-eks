@@ -81,7 +81,7 @@ $ curl http://kubeflow.example.devops.delivery:80/
 
 ## Verify Kubeflow Deployment
 
-Congratulations, you have just deployed Kubeflow! To make sure that all Kubeflow services are running as expected, you can use the following Kubeflow example [MNIST Example] (https://github.com/kubeflow/examples/tree/master/mnist)
+Congratulations, you have just deployed Kubeflow! To make sure that all Kubeflow services are running as expected, you can use the following Kubeflow example: [MNIST Example](https://github.com/kubeflow/examples/tree/master/mnist)
 
 1. Launch a Jupyter notebook
 

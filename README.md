@@ -29,7 +29,7 @@ $ cat etc/eks-cluster.yaml \
 
 2. Attach sufficient IAM policies
 
-By default, the cluster is provisioned with a minimum set of permissions required to run the majority of the pods.  If you need to add more permissions for the cluster, you can attach additional IAM policies.  Use the following command as an example for adding standard IAM policies to your cluster:
+By default, the cluster is provisioned with a minimum set of permissions required to perform most common tasks.  If you need to add more AWS permissions for the cluster, you can attach additional IAM policies.  Use the following command as an example for adding standard IAM policies to your cluster:
 
 ```
 $ hub ext eks attach policy \
@@ -45,7 +45,7 @@ $ hub configure --current-kubecontext --force
 
 This command will use your current kubeconfig context (defined by `eksctl`), generate the necessary configuration and store it in an environment file (`.env` points to current active configuration)
 
-* Generate a unique domain name (valid for 24 hours unless refreshed with `hub configure` command)
+* Generate a unique domain name (valid for 72 hours unless refreshed with `hub configure` command)
 * Domain name refresh key. A token that authorizes domain name refresh
 * Definition of AWS configuration (s3 bucket to store deployment state)
 
@@ -58,6 +58,8 @@ $ hub ext aws status
 $ hub ext aws init
 ```
 
+To install Hub CLI tool on your workstation please follow the steps documented [here](https://docs.agilestacks.com/article/zrban5vpb5-install-toolbox)
+
 5. Deploy current stack
 
 ```bash
@@ -65,10 +67,11 @@ $ hub ext stack deploy
 ```
 
 ## Access the Kubeflow user interface (UI)
-After the stacks is deployed, the Kubeflow Dashboard can be accessed via istio-ingressgateway service.  You can find the URL of deployed gateway using `kubectl` command:
+After the stacks is deployed, the Kubeflow Dashboard can be accessed via istio-ingressgateway service.  You can find the URL of deployed gateway in the stack outputs or using the `kubectl` command:
 ```bash
 $ kubectl get gateways --all-namespaces -o yaml
 ```
+
 The URL for Kubeflow dashboard is shown in the `hosts` section for the following Istio gateway: 
 `name: kubeflow-gateway`
 To confirm the ingress gateway is serving the application to the load balancer, use:

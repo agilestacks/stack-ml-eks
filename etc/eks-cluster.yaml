@@ -4,6 +4,7 @@ kind: ClusterConfig
 metadata:
   name: happy-cluster
   region: us-east-1
+  version: "1.17"
 
 availabilityZones:
 - us-east-1a
@@ -12,7 +13,7 @@ availabilityZones:
 
 nodeGroups:
 - name: workers
-  minSize: 3
+  minSize: 2
   maxSize: 5
   instancesDistribution:
     instanceTypes:
@@ -28,8 +29,10 @@ nodeGroups:
   volumeSize: 100
   volumeType: gp2
   ssh:
-    # allow: true # will use ~/.ssh/id_rsa.pub as the default ssh key
-    # publicKeyPath: ~/.ssh/agilestacks.pub
+    # uses ~/.ssh/id_rsa.pub by default
+    allow: true
+    # to override public key
+    publicKeyPath: ~/.ssh/agilestacks.pub
   tags:
     k8s.io/cluster-autoscaler/enabled: "true"
     k8s.io/cluster-autoscaler/happy-cluster: "owned"
@@ -41,6 +44,9 @@ nodeGroups:
     attachPolicyARNs:
     - arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy
     - arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy
+    # TODO: better if user will run: 
+    # hub ext eks policy attach -p AmazonS3FullAccess
+    # hub ext eks policy attach -p AmazonEC2ContainerRegistryFullAccess
     - arn:aws:iam::aws:policy/AmazonS3FullAccess
     - arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryFullAccess
     withAddonPolicies:
@@ -49,7 +55,7 @@ nodeGroups:
       cloudWatch: true
       certManager: true
       externalDNS: true
-      ebs: true
+      # ebs: true
 
 iam:
   withOIDC: true
@@ -82,24 +88,4 @@ iam:
 
 cloudWatch:
   clusterLogging:
-    enableTypes:
-    - audit
-    - authenticator
-    - controllerManager
-    # - api
-    # - scheduler
-    # - all
-
-# git:
-#   repo:
-#     url: "git@github.com:myorg/cluster-21.git"
-#     branch: master
-#     fluxPath: "flux/"
-#     user: "gitops"
-#     email: "gitops@myorg.com"
-#   operator:
-#     namespace: "flux"
-#     withHelm: true
-#   bootstrapProfile:
-#     source: app-dev
-#     revision: master
+    enableTypes: [audit, authenticator, controllerManager]

@@ -13,25 +13,18 @@ drop-finalizers/%:
 		| jq '. | del(.metadata.finalizers) | del(.spec.finalizers)' \
 		| $(kubectl) replace -f -
 
-cleanup cleanup-all: NAMESPACE:=$(notdir $(shell $(kubectl) get -f namespace.yaml -o name))
+cleanup-all: NAMESPACE:=$(notdir $(shell $(kubectl) get -f namespace.yaml -o name))
 cleanup-all: RESOURCES:=$(shell $(kubectl) api-resources --namespaced=true -o name | xargs)
 cleanup-all:
-	echo "Cleaning up resources in $(NAMESPACE)"
+	echo "Cleaning up dangling resources in $(NAMESPACE)..."
 	for r in $(RESOURCES); do \
-		printf "* Deleting $$r...\t"; \
-		$(kubectl) delete $$r --all -n $(NAMESPACE); \
+		$(kubectl) delete $$r --all -n $(NAMESPACE) > /dev/null 2>&1; \
 	done
-
-cleanup: RESOURCES:=$(shell $(kubectl) get all -n $(NAMESPACE) -o name | xargs)
-cleanup:
-	echo "Cleaning up resources in $(NAMESPACE)"
-	test -z "$(RESOURCES)" || \
-		$(kubectl) delete -n $(NAMESPACE) $(shell echo $(RESOURCES) | tr -s '[:blank:]' ',')
 
 undeploy: drop-finalizers/profile.yaml 
 undeploy: drop-finalizers/namespace.yaml
-undeploy: cleanup
-	$(kubectl) -n (KF_NAMESPACE) delete -f profile.yaml
+undeploy: cleanup-all
+	$(kubectl) -n $(KF_NAMESPACE) delete -f profile.yaml
 	$(kubectl) delete -f namespace.yaml
 
 .SILENT: cleanup-all

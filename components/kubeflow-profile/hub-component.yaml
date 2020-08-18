@@ -21,12 +21,15 @@ parameters:
   env: HUB_DOMAIN_NAME
 - name: component.dex.passwordDb.email
   empty: allow
-- name: component.kubeflow.profile
+- name: component.kubeflow
   parameters:
-  - name: name
+  - name: profile.name
     value: workspace
-  - name: owner.username
+  - name: profile.owner.username
     value: ${component.dex.passwordDb.email}
+  - name: namespace
+    value: kubeflow
+    env: KF_NAMESPACE
 
 outputs: []
 

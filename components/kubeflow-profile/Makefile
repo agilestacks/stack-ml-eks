@@ -3,8 +3,10 @@
 kubectl := kubectl --context="$(HUB_DOMAIN_NAME)"
 
 deploy:
-	$(kubectl) get -f profile.yaml   || $(kubectl) apply -f profile.yaml
-	$(kubectl) get -f namespace.yaml || $(kubectl) apply -f namespace.yaml
+	$(kubectl) get -f namespace.yaml \
+		|| $(kubectl) apply -f namespace.yaml
+	$(kubectl) -n (KF_NAMESPACE) get -f profile.yaml \
+		|| $(kubectl) -n (KF_NAMESPACE) apply -f profile.yaml
 
 drop-finalizers/%:
 	- $(kubectl) get -f $* -o json \
@@ -29,8 +31,8 @@ cleanup:
 undeploy: drop-finalizers/profile.yaml 
 undeploy: drop-finalizers/namespace.yaml
 undeploy: cleanup
+	$(kubectl) -n (KF_NAMESPACE) delete -f profile.yaml
 	$(kubectl) delete -f namespace.yaml
-	$(kubectl) delete -f profile.yaml
 
 .SILENT: cleanup-all
 .IGNORE: undeploy cleanup cleanup-all

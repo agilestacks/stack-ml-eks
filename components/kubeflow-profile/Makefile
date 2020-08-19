@@ -32,5 +32,7 @@ undeploy: cleanup-all
 	fi
 
 .SILENT: cleanup-all
-.IGNORE: undeploy cleanup cleanup-all
 .PHONY: deploy undeploy cleanup cleanup-all
+.IGNORE: undeploy cleanup cleanup-all
+# TODO: remove line below after completiion of a full test iteration 
+.IGNORE: deploy

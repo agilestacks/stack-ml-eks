@@ -9,11 +9,11 @@ deploy:
 		|| $(kubectl) -n "$(KF_NAMESPACE)" apply -f profile.yaml
 
 drop-finalizers/%:
-	- $(kubectl) get -f $* -o json \
+	- $(kubectl) get -f $* -o json > /dev/null 2>&1 \
 		| jq '. | del(.metadata.finalizers) | del(.spec.finalizers)' \
 		| $(kubectl) replace -f -
 
-cleanup-all undeploy: NAMESPACE:=$(notdir $(shell $(kubectl) get -f namespace.yaml -o name))
+cleanup-all undeploy: NAMESPACE:=$(notdir $(shell $(kubectl) get -f namespace.yaml -o name 2>/dev/null))
 cleanup-all: RESOURCES:=$(shell $(kubectl) api-resources --namespaced=true -o name | xargs)
 cleanup-all:
 	echo "Cleaning up dangling resources in $(NAMESPACE)..."
@@ -23,12 +23,12 @@ cleanup-all:
 
 undeploy: drop-finalizers/profile.yaml 
 undeploy: cleanup-all
-	$(kubectl) -n "$(KF_NAMESPACE)" delete -f profile.yaml
+	$(kubectl) -n "$(KF_NAMESPACE)" delete -f profile.yaml --force
 	if test -n "$(NAMESPACE)"; then \
-		$(kubectl) get namespace "$(NAMESPACE)" -o json \
+		$(kubectl) get namespace "$(NAMESPACE)" -o json > /dev/null 2>&1 \
 			| jq '. | del(.spec.finalizers)' \
 			| $(kubectl) replace --raw "/api/v1/namespaces/$(NAMESPACE)/finalize" -f - ; \
-		$(kubectl) delete namespace "$(NAMESPACE)"; \
+		$(kubectl) delete namespace "$(NAMESPACE)" --force; \
 	fi
 
 .SILENT: cleanup-all

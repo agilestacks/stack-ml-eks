@@ -74,7 +74,7 @@ After the stack is deployed, the Kubeflow Dashboard can be accessed via istio-in
 $ kubectl get gateways --all-namespaces -o yaml
 ```
 
-The URL for Kubeflow dashboard is shown in the `hosts` section for the following Istio gateway: 
+The URL for Kubeflow dashboard is shown in the `hosts` section for the following Istio gateway:
 `name: kubeflow-gateway`
 To confirm the ingress gateway is serving the application to the load balancer, use:
 ```bash

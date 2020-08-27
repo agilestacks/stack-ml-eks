@@ -60,6 +60,8 @@ $ hub ext aws init
 
 To install Hub CLI tool on your workstation please follow the steps documented [here](https://docs.agilestacks.com/article/zrban5vpb5-install-toolbox)
 
+The obtained DNS subdomain (of `devops.delivery`) is valid for 72h. To renew the lease please re-run `hub ext aws init` every other day.
+
 5. Deploy current stack
 
 ```bash

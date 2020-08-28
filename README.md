@@ -4,7 +4,7 @@ ML Stack is designed to simplify the deployment of [Kubeflow](https://github.com
 
 ## ML Stack Components
 
-ML Stack privides an open-source based toolset that supports the full lifecycle of an ML application — from data preparation and model training to model deployment in production.  With Kubernetes under the hood, it’s a powerful toolset that can make Data Scientists and Data Engineers life easier.  ML Stacks is based on [Kubeflow](https://github.com/kubeflow) and additional components: external DNS, SSL certificate manager, Istio service mesh, S3 flex storage driver.
+ML Stack provides an open-source machine learning platform that supports the full lifecycle of an ML application — from data preparation and model training to model deployment in production.  With Kubernetes under the hood, it’s a powerful toolset that can make Data Scientists and Data Engineers life easier.  ML Stacks is based on [Kubeflow](https://github.com/kubeflow) and additional components: external DNS, SSL certificate manager, Istio service mesh, S3 flex storage driver.
 ![Components](/kubeflow_components.png)
 
 
@@ -58,7 +58,7 @@ $ hub ext aws status
 $ hub ext aws init
 ```
 
-To install Hub CLI tool on your workstation please follow the steps documented [here](https://docs.agilestacks.com/article/zrban5vpb5-install-toolbox)
+To install Hub CLI tool on your workstation please follow the steps documented [here](https://superhub.io)
 
 The obtained DNS subdomain (of `devops.delivery`) is valid for 72h. To renew the lease please re-run `hub ext aws init` every other day.
 

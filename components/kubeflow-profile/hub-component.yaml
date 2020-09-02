@@ -25,11 +25,11 @@ parameters:
   parameters:
   - name: profile.name
     value: workspace
+    env: PROFILE
   - name: profile.owner.username
     value: ${component.dex.passwordDb.email}
   - name: namespace
     value: kubeflow
-    env: KF_NAMESPACE
 
 outputs: []
 

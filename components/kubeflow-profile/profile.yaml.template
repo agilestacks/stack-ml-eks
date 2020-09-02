@@ -1,9 +1,9 @@
 apiVersion: kubeflow.org/v1
 kind: Profile
 metadata:
+  name: ${component.kubeflow.profile.name}
   finalizers:
   - profile-finalizez
-  name: ${component.kubeflow.profile.name}
 spec:
   owner:
     kind: User

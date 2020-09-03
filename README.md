@@ -32,14 +32,21 @@ $ cat etc/eks-cluster.yaml \
 By default, the cluster is provisioned with a minimum set of permissions required to perform most common tasks.  If you need to add more AWS permissions for the cluster, you can attach additional IAM policies.  Use the following command as an example for adding standard IAM policies to your cluster:
 
 ```
-$ hub ext eks attach policy \
+$ hub ext eks policy attach \
   --cluster "$STACK_NAME" \
-  --policy "AmazonS3FullAccess"
+  --policy "AmazonS3FullAccess" \
+  --aws-region us-west-2
+  
+$ hub ext eks policy attach \
+  --cluster "$STACK_NAME" \
+  --policy "AmazonEC2ContainerRegistryFullAccess" \
+  --aws-region us-west-2
 ```
 
 3. Configure prerequisites
 
 ```bash
+$ hub pull
 $ hub configure --current-kubecontext --force
 ```
 
@@ -51,11 +58,10 @@ This command will use your current kubeconfig context (defined by `eksctl`), gen
 
 4. Install prerequisites (one time operation)
 
-Before you deploy a cluster, we need to be sure that prerequisites defined in configure steps are met
+Before you deploy a cluster, we need to be sure that prerequisites defined in configure steps are met (S3 bucket for terraform state)
 
 ```bash
-$ hub ext aws status
-$ hub ext aws init
+$ hub aws init
 ```
 
 To install Hub CLI tool on your workstation please follow the steps documented [here](https://superhub.io)
@@ -65,7 +71,7 @@ The obtained DNS subdomain (of `devops.delivery`) is valid for 72h. To renew the
 5. Deploy current stack
 
 ```bash
-$ hub ext stack deploy
+$ hub stack deploy
 ```
 
 ## Access the Kubeflow user interface (UI)
@@ -116,7 +122,7 @@ $ hub ext stack deploy -c istio,prometheus
 Deploy the specified component and all subsequent components in the stack runlist.
 
 ```bash
-$ hub ext stack deploy -o istio
+$ hub stack deploy -o istio
 ```
 
 ## Tear Down
@@ -124,8 +130,8 @@ $ hub ext stack deploy -o istio
 If you have used a default name to setup your cluster then you can use the following command to undeploy the entire stack:
 
 ```bash
-$ hub ext stack undeploy
-$ hub ext eks detach policy --cluster $STACK_NAME --all
+$ hub stack undeploy
+$ hub ext eks policy detach --cluster $STACK_NAME --all
 $ eksctl delete cluster -f etc/eks-cluster.yaml
 ```
 

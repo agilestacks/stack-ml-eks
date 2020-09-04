@@ -3,13 +3,13 @@ kind: ClusterConfig
 
 metadata:
   name: happy-cluster
-  region: us-east-1
-  version: "1.17"
+  region: us-west-2
+  version: "1.16"
 
 availabilityZones:
-- us-east-1a
-- us-east-1b
-- us-east-1c
+- us-west-2a
+- us-west-2b
+- us-west-2c
 
 nodeGroups:
 - name: workers

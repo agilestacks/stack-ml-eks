@@ -3,7 +3,7 @@ version: 1
 kind: component
 meta:
   name: kubeflow-profile
-  title: Kubeflow Namespaace
+  title: Kubeflow Namespace
   brief: Machine learning
   description: Creates a namespace (user profile) for a kubeflow user
   category: AI and Machine Learning

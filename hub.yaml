@@ -103,6 +103,7 @@ components:
 
 requires:
   - aws
+  - aws-marketplace
   - kubernetes
 lifecycle:
   verbs:

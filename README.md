@@ -5,8 +5,7 @@ ML Stack is designed to simplify the deployment of [Kubeflow](https://github.com
 ## ML Stack Components
 
 ML Stack provides an open-source machine learning platform that supports the full lifecycle of an ML application — from data preparation and model training to model deployment in production.  With Kubernetes under the hood, it’s a powerful toolset that can make Data Scientists and Data Engineers life easier.  ML Stacks is based on [Kubeflow](https://github.com/kubeflow) and additional components: external DNS, SSL certificate manager, Istio service mesh, S3 flex storage driver.
-![Components](/kubeflow_components.png)
-
+![Components](/etc/kubeflow_components.png)
 
 ## Installation
 

@@ -4,3 +4,4 @@
 *.kubeconfig
 *.state
 *.elaborate
+.kubeconfig.eksctl.lock

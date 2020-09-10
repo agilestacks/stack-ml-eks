@@ -45,6 +45,17 @@ parameters:
     # this parameter is deprecated
     # it will be removed in the future
     value: "true"
+
+  - name: ingressGateway
+    value: ingressgateway
+    component: istio
+  - name: ingressGateway
+    value: kubeflow-ingressgateway
+    component: kubeflow-ingressgateway
+  - name: ingressGateway
+    value: kubeflow-ingressgateway
+    component: kubeflow
+
 - name: component.kubeflow
   parameters:
   - name: name
@@ -61,7 +72,7 @@ parameters:
   - name: name
     value: buckets
   - name: namespace
-    value: ${component.kubeflow.namespace}
+    value: ${component.kubeflow.name}-data
   - name: accessKey
     value: minio
   - name: secretKey
@@ -86,7 +97,7 @@ parameters:
   kind: user
   parameters:
   - name: namespace
-    value: ${component.kubeflow.namespace}
+    value: ${component.kubeflow.name}-data
   - name: databasee
     value: mlpipeline
   - name: user
@@ -107,6 +118,7 @@ parameters:
   component: kubeflow
   value: ${component.mysql.rootPassword}
     # value: 7b4cc3facd9f408baf685d068c850bd8
+
 - name: component.bucket.endpoint
   component: kubeflow
   value: http://${component.minio.name}.${component.minio.namespace}.svc.cluster.local:9000
@@ -126,7 +138,7 @@ parameters:
 - name: component.s3flex
   parameters:
   - name: driver.namespace
-    value: ${component.kubeflow.namespace}
+    value: ${component.kubeflow.name}-data
   - name: pvc.namespace
     value: workspace
     # value: ${component.kubeflow.namespace}

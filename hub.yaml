@@ -59,13 +59,6 @@ components:
         remote: 'https://github.com/agilestacks/components.git'
         ref: master
         subDir: prometheus-operator
-  - name: mysql
-    source:
-      dir: components/mysql
-      git:
-        remote: 'https://github.com/agilestacks/components.git'
-        ref: master
-        subDir: mysql
   - name: istio
     source:
       dir: components/istio
@@ -73,6 +66,13 @@ components:
         remote: 'https://github.com/agilestacks/components.git'
         ref: master
         subDir: istio
+  - name: mysql
+    source:
+      dir: components/mysql
+      git:
+        remote: 'https://github.com/agilestacks/components.git'
+        ref: master
+        subDir: mysql
   - name: minio
     source:
       dir: components/minio
@@ -80,16 +80,13 @@ components:
         remote: 'https://github.com/agilestacks/components.git'
         ref: master
         subDir: minio
-  - name: kubeflow
+  - name: kubeflow-ingressgateway
     source:
-      dir: components/kubeflow-v1.0
+      dir: components/istio-ingressgateway
       git:
         remote: 'https://github.com/agilestacks/components.git'
         ref: master
-        subDir: kubeflow-v1.0
-  - name: kubeflow-profile
-    source:
-      dir: components/kubeflow-profile
+        subDir: istio-ingressgateway
   - name: s3-flex-driver
     source:
       dir: components/s3fs
@@ -97,9 +94,19 @@ components:
         remote: 'https://github.com/agilestacks/applications.git'
         ref: master
         subDir: components/s3fs
-  - name: s3-flex-pvc
+  - name: kubeflow
     source:
-      dir: components/s3fs/pvc
+      dir: components/kubeflow-v1.0
+      git:
+        remote: 'https://github.com/agilestacks/components.git'
+        ref: master
+        subDir: kubeflow-v1.0
+  # - name: kubeflow-profile
+  #   source:
+  #     dir: components/kubeflow-profile
+  # - name: s3-flex-pvc
+  #   source:
+  #     dir: components/s3fs/pvc
 
 requires:
   - aws
@@ -119,12 +126,13 @@ lifecycle:
     - dex
     - prometheus
     - istio
+    - kubeflow-ingressgateway
     - mysql
     - minio
-    - s3-flex-driver
     - kubeflow
-    - kubeflow-profile
-    - s3-flex-pvc
+    # - kubeflow-profile
+    - s3-flex-driver
+    # - s3-flex-pvc
   mandatory:
     - tiller
     - external-dns

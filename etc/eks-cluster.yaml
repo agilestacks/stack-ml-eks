@@ -13,7 +13,7 @@ availabilityZones:
 
 nodeGroups:
 - name: workers
-  minSize: 2
+  minSize: 3
   maxSize: 5
   instancesDistribution:
     instanceTypes:

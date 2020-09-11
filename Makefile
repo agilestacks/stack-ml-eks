@@ -37,7 +37,7 @@ STATE_FILES := $(STATE_FILE_FS),$(STATE_FILE_CLOUD)
 TEMPLATE_PARAMS ?= params/template.yaml
 STACK_PARAMS    ?= params/$(DOMAIN_NAME).yaml
 
-PLATFORM_PROVIDES    ?=
+PLATFORM_PROVIDES    += aws-marketplace
 PLATFORM_STATE_FILES ?=
 
 COMPONENT :=
@@ -52,6 +52,10 @@ hub    ?= hub -d
 aws    ?= aws --region $(STATE_REGION)
 gsutil ?= gsutil
 az     ?= az
+
+space :=
+space +=
+comma := ,
 
 ifdef HUB_TOKEN
 ifdef HUB_ENVIRONMENT
@@ -73,7 +77,7 @@ endif
 $(ELABORATE_FILE_FS): hub.yaml $(TEMPLATE_PARAMS) $(STACK_PARAMS) $(RESTORE_PARAMS_FILE) params.yaml pull
 	$(hub) elaborate \
 		hub.yaml params.yaml $(TEMPLATE_PARAMS) $(STACK_PARAMS) $(RESTORE_PARAMS_FILE) \
-		$(if $(PLATFORM_PROVIDES),-p $(PLATFORM_PROVIDES),) \
+		$(if $(PLATFORM_PROVIDES),-p $(subst $(space),$(comma),$(PLATFORM_PROVIDES)),) \
 		$(if $(PLATFORM_STATE_FILES),-s $(PLATFORM_STATE_FILES),) \
 		$(HUB_OPTS) \
 		-o $(ELABORATE_FILES)

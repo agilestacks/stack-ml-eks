@@ -126,6 +126,12 @@ parameters:
   component: s3-flex-pvc
   value: http://${component.minio.name}.${component.minio.namespace}.svc.cluster.local:9000
 
+- name: component.kubernetes-dashboard
+  parameters:
+  - name: rbac.kind
+    value: read-only
+    # value: admin
+
 - name: component.prometheus
   parameters:
   - name: prometheus.volumeSize

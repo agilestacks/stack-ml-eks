@@ -52,6 +52,13 @@ components:
         remote: 'https://github.com/agilestacks/components.git'
         ref: master
         subDir: dex
+  - name: kube-dashboard
+    source:
+      dir: components/kube-dashboard
+      git:
+        remote: 'https://github.com/agilestacks/components.git'
+        ref: master
+        subDir: kube-dashboard2
   - name: prometheus
     source:
       dir: components/prometheus-operator
@@ -124,6 +131,7 @@ lifecycle:
     - traefik2
     - tls-host-controller
     - dex
+    - kube-dashboard
     - prometheus
     - istio
     - kubeflow-ingressgateway
@@ -142,3 +150,6 @@ lifecycle:
     - mysql
     - minio
     - kubeflow
+
+outputs:
+  - name: kube-dashboard:component.kubernetes-dashboard.url

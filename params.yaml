@@ -74,9 +74,9 @@ parameters:
   - name: namespace
     value: ${component.kubeflow.name}-data
   - name: accessKey
-    fromEnv: MINIO_ACCESS_KEY_ID
+    fromEnv: COMPONENT_MINIO_ACCESS_KEY
   - name: secretKey
-    fromEnv: MINIO_SECRET_KEY_ID
+    fromEnv: COMPONENT_MINIO_SECRET_KEY
   - name: region
     value: ${cloud.region}
   - name: default.bucket.name
@@ -101,11 +101,11 @@ parameters:
   - name: databasee
     value: mlpipeline
   - name: user
-    fromEnv: MYSQL_USER_NAME
+    fromEnv: COMPONENT_MYSQL_USER
   - name: password
-    fromEnv: MYSQL_USER_PASSWORD
+    fromEnv: COMPONENT_MYSQL_PASSWORD
   - name: rootPassword
-    fromEnv: MYSQL_ROOT_USER_PASSWORD
+    fromEnv: COMPONENT_MYSQL_ROOT_PASSWORD
   - name: volumeSize
     value: 8Gi
 
@@ -154,9 +154,9 @@ parameters:
   - name: namespace
     value: kube-system
   - name: passwordDb.email
-    fromEnv: DEX_USER_EMAIL
+    fromEnv: COMPONENT_DEX_PASSWORD_DB_EMAIL
   - name: passwordDb.password
-    fromEnv: DEX_USER_PASSWORD
+    fromEnv: COMPONENT_DEX_PASSWORD_DB_PASSWORD
 
 outputs:
 - name: component.kubeflow.url

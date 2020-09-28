@@ -15,13 +15,13 @@ A new EKS cluster can be created using the [eksctl](https://docs.aws.amazon.com/
 
 To install Hub CLI tool on your workstation please follow the steps documented [here](https://superhub.io)
 
-1. Create an EKS cluster
+1. Create an EKS cluster with a default name `happy-cluster`:
 
 ```bash
 $ eksctl create cluster -f etc/eks-cluster.yaml
 ```
 
-Or create cluster with a different name
+Or create a cluster with a custom name:
 
 ```bash
 $ export STACK_NAME="better-name-for-my-cluster"
@@ -49,21 +49,19 @@ $ hub ext eks policy attach \
 3. Configure prerequisites
 
 ```bash
-$ hub pull
-$ hub configure --current-kubecontext 
+$ hub ext component download --force --all
+$ hub configure --current-kubecontext --force
 ```
 
 This command will use your current kubeconfig context (defined by `eksctl`), generate the necessary configuration and store it in an environment file (`.env` points to current active configuration)
 
 * Generate a unique domain name (valid for 72 hours unless refreshed with `hub configure` command)
-* Domain name refresh key. A token that authorizes domain name refresh
-* Definition of AWS configuration (s3 bucket to store deployment state)
+* Domain name refresh key (a token that authorizes DNS domain name refresh)
+* Definition of AWS configuration (S3 bucket to store deployment state)
 
-The obtained DNS subdomain (of `bubble.superhub.io`) is valid for 72h. To renew the lease please re-run `hub configure -r aws --dns-update` every other day.
+The obtained DNS subdomain (of `bubble.superhub.io`) is valid for 72 hours. To renew the DNS lease, please re-run `hub configure -r aws --dns-update` every other day. Contact `support@agilestacks.com` for non-expiring DNS domain.
 
-ML Stack will setup a user/pass authentication. During `hub configure` step you will be asked to define a username and passord. Your password will be stored in `.env` file and should not be committed to the git repository. If you want to change already entered value. Please feel free to modify this value in `.env` file directly.
-
-If you want to set a randomly generated password, then when you will be prompted to enter a password, leave the value empty.
+ML Stack will configure a user/password authentication. During `hub configure` step you will be asked to define a user name and password. Your password will be stored in `.env` file and should not be committed to the git repository. If you want to change the password later, you can modify this value in `.env` file directly.  If you prefer to use a randomly generated password, then leave the value empty when prompted to enter a password.
 
 4. Deploy current stack
 

@@ -74,9 +74,9 @@ parameters:
   - name: namespace
     value: ${component.kubeflow.name}-data
   - name: accessKey
-    value: minio
+    fromEnv: MINIO_ACCESS_KEY_ID
   - name: secretKey
-    value: minio123
+    fromEnv: MINIO_SECRET_KEY_ID
   - name: region
     value: ${cloud.region}
   - name: default.bucket.name
@@ -101,13 +101,11 @@ parameters:
   - name: databasee
     value: mlpipeline
   - name: user
-    value: scott
+    fromEnv: MYSQL_USER_NAME
   - name: password
-    # randomly generated
-    value: b51b79dde371454d9d3c91e3b07fc651
+    fromEnv: MYSQL_USER_PASSWORD
   - name: rootPassword
-    # randomly generated
-    value: 7b4cc3facd9f408baf685d068c850bd8
+    fromEnv: MYSQL_ROOT_USER_PASSWORD
   - name: volumeSize
     value: 8Gi
 
@@ -156,10 +154,9 @@ parameters:
   - name: namespace
     value: kube-system
   - name: passwordDb.email
-    value: admin@agilestacks.com
-  - name: passwordDb.passwordHash
-    # 12341234
-    value: $2y$12$yua.T4aIZ5IjJsYDCal4X.jy/516D.xkFJsSGQY/vfch5aeEJc012
+    fromEnv: DEX_USER_EMAIL
+  - name: passwordDb.password
+    fromEnv: DEX_USER_PASSWORD
 
 outputs:
 - name: component.kubeflow.url

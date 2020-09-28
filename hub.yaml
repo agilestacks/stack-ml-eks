@@ -3,6 +3,14 @@ kind: stack
 meta:
   name: Machine Learning stack
   brief: Stack that contains Kubeflow and ready to work for Data Scientist
+  deploy:
+    requires:
+    - aws-marketplace
+  configure:
+    requires:
+    - aws
+    - kubernetes
+    - env
 components:
   - name: tiller
     source:
@@ -31,7 +39,7 @@ components:
       git:
         remote: 'https://github.com/agilestacks/components.git'
         ref: master
-        subDir: cert-manager
+        subDir: cert-manager        
   - name: traefik2
     source:
       dir: components/traefik2
@@ -45,6 +53,13 @@ components:
       git:
         remote: 'https://github.com/agilestacks/tls-host-controller.git'
         ref: master
+  - name: kube-dashboard
+    source:
+      dir: components/kube-dashboard2
+      git:
+        remote: 'https://github.com/agilestacks/components.git'
+        ref: master
+        subDir: tiller        
   - name: dex
     source:
       dir: components/dex
@@ -117,7 +132,6 @@ components:
 
 requires:
   - aws
-  - aws-marketplace
   - kubernetes
 lifecycle:
   verbs:

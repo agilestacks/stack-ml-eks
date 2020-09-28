@@ -11,6 +11,10 @@ ML Stack provides an open-source machine learning platform that supports the ful
 
 A new EKS cluster can be created using the [eksctl](https://docs.aws.amazon.com/eks/latest/userguide/eksctl.html) tool and the configuration file [etc/eks-cluster.yaml](etc/eks-cluster.yaml). If you already have an existing EKS cluster, please make sure that following addons are deployed: `certManager` and `externalDNS`.
 
+0. Intall a hub CLI
+
+To install Hub CLI tool on your workstation please follow the steps documented [here](https://superhub.io)
+
 1. Create an EKS cluster
 
 ```bash
@@ -46,7 +50,7 @@ $ hub ext eks policy attach \
 
 ```bash
 $ hub pull
-$ hub configure --current-kubecontext --force
+$ hub configure --current-kubecontext 
 ```
 
 This command will use your current kubeconfig context (defined by `eksctl`), generate the necessary configuration and store it in an environment file (`.env` points to current active configuration)
@@ -55,19 +59,13 @@ This command will use your current kubeconfig context (defined by `eksctl`), gen
 * Domain name refresh key. A token that authorizes domain name refresh
 * Definition of AWS configuration (s3 bucket to store deployment state)
 
-4. Install prerequisites (one time operation)
+The obtained DNS subdomain (of `bubble.superhub.io`) is valid for 72h. To renew the lease please re-run `hub configure -r aws --dns-update` every other day.
 
-Before you deploy a cluster, we need to be sure that prerequisites defined in configure steps are met (S3 bucket for terraform state)
+ML Stack will setup a user/pass authentication. During `hub configure` step you will be asked to define a username and passord. Your password will be stored in `.env` file and should not be committed to the git repository. If you want to change already entered value. Please feel free to modify this value in `.env` file directly.
 
-```bash
-$ hub aws init
-```
+If you want to set a randomly generated password, then when you will be prompted to enter a password, leave the value empty.
 
-To install Hub CLI tool on your workstation please follow the steps documented [here](https://superhub.io)
-
-The obtained DNS subdomain (of `devops.delivery`) is valid for 72h. To renew the lease please re-run `hub ext aws init` every other day.
-
-5. Deploy current stack
+4. Deploy current stack
 
 ```bash
 $ hub stack deploy

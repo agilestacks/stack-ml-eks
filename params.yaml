@@ -169,3 +169,5 @@ outputs:
   brief: Prometheus Dashboard
 - name: component.ingress.dashboard.url
   brief: Traefik Dashboard
+- name: component.kubernetes-dashboard.url
+  brief: Kubernetes Dashboard

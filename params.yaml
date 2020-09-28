@@ -11,23 +11,26 @@ parameters:
   brief: DNS
   kind: user
   parameters:
+  - name: domain
+    brief: Fully qualified domain name of the stack (FQDN)
+    fromEnv: HUB_DOMAIN_NAME
   - name: name
-    brief: DNS name
+    brief: Stack name (first part of stack FQDN)
     fromEnv: HUB_STACK_NAME
   # - name: baseDomain
   #   brief: DNS base domain
   #   fromEnv: BASE_DOMAIN
   #   default: devops.delivery
-  - name: domain
-    fromEnv: HUB_DOMAIN_NAME
 - name: component.storage-class.name
   value: default
 - name: terraform.bucket
   brief: Terraform state location
   parameters:
   - name: name
+    brief: Name of the bucket to store deployment state
     fromEnv: HUB_STATE_BUCKET
   - name: region
+    brief: Region of the bucket to store deployment state
     fromEnv: HUB_STATE_REGION
 - name: component.ingress
   parameters:
@@ -74,8 +77,10 @@ parameters:
   - name: namespace
     value: ${component.kubeflow.name}-data
   - name: accessKey
+    brief: Minio Access Key ID (at least 5 symbols)
     fromEnv: COMPONENT_MINIO_ACCESS_KEY
   - name: secretKey
+    brief: Minio Secret Key ID (at least 8 symbols)
     fromEnv: COMPONENT_MINIO_SECRET_KEY
   - name: region
     value: ${cloud.region}
@@ -100,12 +105,15 @@ parameters:
     value: ${component.kubeflow.name}-data
   - name: databasee
     value: mlpipeline
+  - name: rootPassword
+    brief: My SQL root password
+    fromEnv: COMPONENT_MYSQL_ROOT_PASSWORD
   - name: user
+    brief: My SQL user name
     fromEnv: COMPONENT_MYSQL_USER
   - name: password
+    brief: My SQL user password  
     fromEnv: COMPONENT_MYSQL_PASSWORD
-  - name: rootPassword
-    fromEnv: COMPONENT_MYSQL_ROOT_PASSWORD
   - name: volumeSize
     value: 8Gi
 
@@ -154,8 +162,10 @@ parameters:
   - name: namespace
     value: kube-system
   - name: passwordDb.email
+    brief: User email (to login with SSO)
     fromEnv: COMPONENT_DEX_PASSWORD_DB_EMAIL
   - name: passwordDb.password
+    brief: User password (to login with SSO)
     fromEnv: COMPONENT_DEX_PASSWORD_DB_PASSWORD
 
 outputs:

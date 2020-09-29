@@ -50,7 +50,7 @@ $ hub ext eks policy attach \
 
 ```bash
 $ hub ext component download --force --all
-$ hub configure --current-kubecontext --force
+$ hub configure -f hub.yaml -f params.yaml
 ```
 
 This command will use your current kubeconfig context (defined by `eksctl`), generate the necessary configuration and store it in an environment file (`.env` points to current active configuration)

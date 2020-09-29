@@ -3,14 +3,21 @@ kind: stack
 meta:
   name: Machine Learning stack
   brief: Stack that contains Kubeflow and ready to work for Data Scientist
-  deploy:
-    requires:
-    - aws-marketplace
+
+extensions:
   configure:
-    requires:
-    - aws
-    - kubernetes
-    - env
+  - aws
+  - kubernetes
+  - env
+  deploy:  
+    before:
+    - aws-metering
+    after:
+    - inventory-configmap
+  parameters:
+  - name: aws-metering.productCode
+    value: 3aqp8v3w33r757jvba9lxjc0e
+
 components:
   - name: tiller
     source:

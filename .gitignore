@@ -5,3 +5,4 @@
 *.state
 *.elaborate
 .kubeconfig.eksctl.lock
+*.bak

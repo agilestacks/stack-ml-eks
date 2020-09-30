@@ -70,7 +70,20 @@ $ hub stack deploy
 ```
 
 ## Access the Kubeflow user interface (UI)
-After the stack is deployed, the Kubeflow Dashboard can be accessed via istio-ingressgateway service.  You can find the URL of deployed gateway in the stack outputs or using the `kubectl` command:
+After the stack is deployed, the Kubeflow Dashboard can be accessed via istio-ingressgateway service.  
+Refer to the stack outputs for Kubeflow Central Dashboard URL, for example:
+
+```2020/09/30 13:25:27 Stack outputs:
+2020/09/30 13:25:27 	component.ingress.dashboard.url [Traefik Dashboard] => `https://app.symptomatic-chumi-363.bubble.superhub.io/dashboard/`
+2020/09/30 13:25:27 	component.kubernetes-dashboard.url [Kubernetes Dashboard] => `https://kubernetes.apps.symptomatic-chumi-363.bubble.superhub.io`
+2020/09/30 13:25:27 	component.kubeflow.url [Kubeflow Central Dashboard] => `http://kubeflow.symptomatic-chumi-363.bubble.superhub.io/`
+2020/09/30 13:25:27 	component.minio.url [Minio Endpoint] => `https://buckets.app.symptomatic-chumi-363.bubble.superhub.io/minio`
+2020/09/30 13:25:27 	component.istio.kiali.url [Istio Kiali] => `https://istio-kiali.apps.symptomatic-chumi-363.bubble.superhub.io`
+2020/09/30 13:25:27 	component.prometheus.url [Prometheus Dashboard] => `https://prometheus.apps.symptomatic-chumi-363.bubble.superhub.io`
+2020/09/30 13:25:27 Completed deploy on Machine Learning stack
+```
+
+Alternatively, you can also find the URL of deployed gateways using the `kubectl` command:
 ```bash
 $ kubectl get gateways --all-namespaces -o yaml
 ```
@@ -79,7 +92,7 @@ The URL for Kubeflow dashboard is shown in the `hosts` section for the following
 `name: kubeflow-gateway`
 To confirm the ingress gateway is serving the application to the load balancer, use:
 ```bash
-$ curl http://kubeflow.example.devops.delivery:80/
+$ curl https://kubeflow.example.devops.delivery/
 ```
 
 ## Verify Kubeflow Deployment

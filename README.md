@@ -90,9 +90,9 @@ $ kubectl get gateways --all-namespaces -o yaml
 
 The URL for Kubeflow dashboard is shown in the `hosts` section for the following Istio gateway:
 `name: kubeflow-gateway`
-To confirm the ingress gateway is serving the application to the load balancer, use:
+To confirm the ingress gateway is serving the application to the load balancer, use curl and update URL based on stack output:
 ```bash
-$ curl https://kubeflow.example.devops.delivery/
+$ curl https://kubeflow.symptomatic-chumi-363.bubble.superhub.io/
 ```
 
 ## Verify Kubeflow Deployment

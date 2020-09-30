@@ -164,3 +164,4 @@ lifecycle:
     - mysql
     - minio
     - kubeflow
+    - kube-dashboard

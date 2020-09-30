@@ -106,13 +106,13 @@ parameters:
   - name: databasee
     value: mlpipeline
   - name: rootPassword
-    brief: My SQL root password
+    brief: MySQL root password
     fromEnv: COMPONENT_MYSQL_ROOT_PASSWORD
   - name: user
-    brief: My SQL user name
+    brief: MySQL user name
     fromEnv: COMPONENT_MYSQL_USER
   - name: password
-    brief: My SQL user password  
+    brief: MySQL user password  
     fromEnv: COMPONENT_MYSQL_PASSWORD
   - name: volumeSize
     value: 8Gi
@@ -162,10 +162,10 @@ parameters:
   - name: namespace
     value: kube-system
   - name: passwordDb.email
-    brief: User email (to login with SSO)
+    brief: Admin user email (to login with Dex)
     fromEnv: COMPONENT_DEX_PASSWORD_DB_EMAIL
   - name: passwordDb.password
-    brief: User password (to login with SSO)
+    brief: Admin user password (to login with Dex)
     fromEnv: COMPONENT_DEX_PASSWORD_DB_PASSWORD
 
 outputs:

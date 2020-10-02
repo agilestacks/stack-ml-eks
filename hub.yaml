@@ -4,20 +4,6 @@ meta:
   name: Machine Learning stack
   brief: Stack that contains Kubeflow and ready to work for Data Scientist
 
-extensions:
-  configure:
-  - aws
-  - kubernetes
-  - env
-  deploy:  
-    before:
-    - aws-metering
-    after:
-    - inventory-configmap
-  parameters:
-  - name: aws-metering.productCode
-    value: 3aqp8v3w33r757jvba9lxjc0e
-
 components:
   - name: tiller
     source:
@@ -129,6 +115,23 @@ components:
   # - name: s3-flex-pvc
   #   source:
   #     dir: components/s3fs/pvc
+
+extensions:
+  include:
+  - params.yaml
+  configure:
+  - components
+  - aws
+  - kubernetes
+  - env
+  deploy:  
+    before:
+    - aws-metering
+    after:
+    - inventory-configmap
+  parameters:
+  - name: aws-metering.productCode
+    value: 3aqp8v3w33r757jvba9lxjc0e
 
 requires:
   - aws

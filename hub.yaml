@@ -112,6 +112,9 @@ components:
   # - name: kubeflow-profile
   #   source:
   #     dir: components/kubeflow-profile
+  #     git:
+  #       remote: 'https://github.com/agilestacks/stack-ml-eks.git'
+  #       subDir: 'components/kubeflow-profile'
   # - name: s3-flex-pvc
   #   source:
   #     dir: components/s3fs/pvc

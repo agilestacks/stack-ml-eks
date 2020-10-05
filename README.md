@@ -9,28 +9,28 @@ ML Stack provides an open-source machine learning platform that supports the ful
 
 ## Installation
 
-A new EKS cluster can be created using the [eksctl](https://docs.aws.amazon.com/eks/latest/userguide/eksctl.html) tool and the configuration file [etc/eks-cluster.yaml](etc/eks-cluster.yaml). If you already have an existing EKS cluster, please make sure that following addons are deployed: `certManager` and `externalDNS`.
+This repository provides a customizable GitOps stack template, which allows to deploy the entire Kubeflow platform with a few simple commands.  It allows to simplify, automate, and standardize Kubeflow deployments.  GitOps is defined as a way of managing cloud infrastructure and applications, using Git repository to hold declarative definition of infrastructure. You can use the following steps to deploy Kubeflow on an existing EKS cluster, or create a new EKS cluster for Kubeflow.
 
-0. Intall a hub CLI
+1. Intall Hub CLI
 
-To install Hub CLI tool on your workstation please follow the steps documented [here](https://superhub.io)
+Hub CLI is an open source GitOps tool for automating deployment of customizable stacks created with Terraform, CloudFormation, Helm, and other infrastructure as code.
+To install Hub CLI on your workstation please follow the steps documented [here](https://superhub.io)
 
-1. Create an EKS cluster with a default name `happy-cluster`:
+2. Create an EKS cluster
 
+If you have an existing EKS cluster, then use the following example command to configure EKS cluster context:
 ```bash
-$ eksctl create cluster -f etc/eks-cluster.yaml
+$ aws eks --region us-west-2 update-kubeconfig --name cluster-name
 ```
 
-Or create a cluster with a custom name:
+The following command will create a new EKS cluster with a custom name:
 
 ```bash
-$ export STACK_NAME="better-name-for-my-cluster"
-$ cat etc/eks-cluster.yaml \
-  | sed -e "s/happy-cluster/$STACK_NAME/g" \
-  | eksctl create cluster -f -
+$ export STACK_NAME="my-cluster"
+$ cat etc/eks-cluster.yaml | sed -e "s/happy-cluster/$STACK_NAME/g" | eksctl create cluster -f -
 ```
 
-2. Attach sufficient IAM policies
+3. Attach sufficient IAM security policies
 
 By default, the cluster is provisioned with a minimum set of permissions required to perform most common tasks.  If you need to add more AWS permissions for the cluster, you can attach additional IAM policies.  Use the following command as an example for adding standard IAM policies to your cluster:
 
@@ -40,13 +40,9 @@ $ hub ext eks policy attach \
   --policy "AmazonS3FullAccess" \
   --aws-region us-west-2
   
-$ hub ext eks policy attach \
-  --cluster "$STACK_NAME" \
-  --policy "AmazonEC2ContainerRegistryFullAccess" \
-  --aws-region us-west-2
 ```
 
-3. Configure prerequisites
+4. Generate configuration files
 
 ```bash
 $ hub ext component download --force --all
@@ -63,7 +59,7 @@ The obtained DNS subdomain (of `bubble.superhub.io`) is valid for 72 hours. To r
 
 ML Stack will configure a user/password authentication. During `hub configure` step you will be asked to define a user name and password. Your password will be stored in `.env` file and should not be committed to the git repository. If you want to change the password later, you can modify this value in `.env` file directly.  If you prefer to use a randomly generated password, then leave the value empty when prompted to enter a password.
 
-4. Deploy current stack
+5. Deploy the stack
 
 ```bash
 $ hub stack deploy

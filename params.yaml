@@ -164,9 +164,11 @@ parameters:
   - name: passwordDb.email
     brief: Admin user email (to login with Dex)
     fromEnv: COMPONENT_DEX_PASSWORD_DB_EMAIL
+    empty: allow
   - name: passwordDb.password
     brief: Admin user password (to login with Dex)
     fromEnv: COMPONENT_DEX_PASSWORD_DB_PASSWORD
+    empty: allow
 
 outputs:
 - name: component.kubeflow.url

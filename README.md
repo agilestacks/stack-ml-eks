@@ -45,7 +45,6 @@ $ hub ext eks policy attach \
 4. Generate configuration files
 
 ```bash
-$ hub ext component download --force --all
 $ hub configure -f hub.yaml -f params.yaml
 ```
 
@@ -117,8 +116,8 @@ git clone https://github.com/kubeflow/examples.git git_kubeflow-examples
 Redeploy one or more compomnents. The following commands will redeploy two stack components: `istio` and `prometheus`
 
 ```bash
-$ hub ext stack undeploy -c istio,prometheus
-$ hub ext stack deploy -c istio,prometheus
+$ hub stack undeploy -c istio,prometheus
+$ hub stack deploy -c istio,prometheus
 ```
 
 ### Deploy all components starting from the pre-deployed component

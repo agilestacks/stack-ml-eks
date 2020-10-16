@@ -42,10 +42,10 @@ $ hub ext eks policy attach \
   
 ```
 
-4. Generate configuration files
+4. Configure environment for deploying Kubeflow in the current directory:
 
 ```bash
-$ hub configure -f hub.yaml -f params.yaml
+$ hub configure -f https://raw.githubusercontent.com/agilestacks/stack-ml-eks/master/hub.yaml
 ```
 
 This command will use your current kubeconfig context (defined by `eksctl`), generate the necessary configuration and store it in an environment file (`.env` points to current active configuration)
@@ -65,30 +65,11 @@ $ hub stack deploy
 ```
 
 ## Access the Kubeflow user interface (UI)
-After the stack is deployed, the Kubeflow Dashboard can be accessed via istio-ingressgateway service.  
-Refer to the stack outputs for Kubeflow Central Dashboard URL, for example:
-
-```2020/09/30 13:25:27 Stack outputs:
-2020/09/30 13:25:27 	component.ingress.dashboard.url [Traefik Dashboard] => `https://app.symptomatic-chumi-363.bubble.superhub.io/dashboard/`
-2020/09/30 13:25:27 	component.kubernetes-dashboard.url [Kubernetes Dashboard] => `https://kubernetes.apps.symptomatic-chumi-363.bubble.superhub.io`
-2020/09/30 13:25:27 	component.kubeflow.url [Kubeflow Central Dashboard] => `http://kubeflow.symptomatic-chumi-363.bubble.superhub.io/`
-2020/09/30 13:25:27 	component.minio.url [Minio Endpoint] => `https://buckets.app.symptomatic-chumi-363.bubble.superhub.io/minio`
-2020/09/30 13:25:27 	component.istio.kiali.url [Istio Kiali] => `https://istio-kiali.apps.symptomatic-chumi-363.bubble.superhub.io`
-2020/09/30 13:25:27 	component.prometheus.url [Prometheus Dashboard] => `https://prometheus.apps.symptomatic-chumi-363.bubble.superhub.io`
-2020/09/30 13:25:27 Completed deploy on Machine Learning stack
-```
-
-Alternatively, you can also find the URL of deployed gateways using the `kubectl` command:
+You can find the URL of deployed Kubeflow Dashboard using the `hub show` command and parameter `component.kubeflow.url`:
 ```bash
-$ kubectl get gateways --all-namespaces -o yaml
+$ hub show
 ```
 
-The URL for Kubeflow dashboard is shown in the `hosts` section for the following Istio gateway:
-`name: kubeflow-gateway`
-To confirm the ingress gateway is serving the application to the load balancer, use curl and update URL based on stack output:
-```bash
-$ curl https://kubeflow.symptomatic-chumi-363.bubble.superhub.io/
-```
 
 ## Verify Kubeflow Deployment
 

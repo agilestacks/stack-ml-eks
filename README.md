@@ -65,11 +65,12 @@ $ hub stack deploy
 ```
 
 ## Access the Kubeflow user interface (UI)
-You can find the URL of deployed Kubeflow Dashboard using the `hub show` command and parameter `component.kubeflow.url`:
+You can find the URL of deployed Kubeflow Dashboard using the `hub show` command with parameter `component.kubeflow.url`:
 ```bash
-$ hub show
+$ hub show -q '.parameters.component.kubeflow.url'
+"https://kubeflow.grandiose-teobaldo-556.bubble.superhub.io/"
 ```
-
+Note: `hub show` will return values of all stack parameters.
 
 ## Verify Kubeflow Deployment
 

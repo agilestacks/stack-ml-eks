@@ -29,10 +29,9 @@ nodeGroups:
   volumeSize: 100
   volumeType: gp2
   ssh:
-    # uses ~/.ssh/id_rsa.pub by default
-    allow: true
+    allow: false
     # to override public key
-    publicKeyPath: ~/.ssh/agilestacks.pub
+    # publicKeyPath: ~/.ssh/id_rsa.pub
   tags:
     k8s.io/cluster-autoscaler/enabled: "true"
     k8s.io/cluster-autoscaler/happy-cluster: "owned"

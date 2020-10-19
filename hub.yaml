@@ -117,7 +117,7 @@ components:
   #       subDir: 'components/kubeflow-profile'
   # - name: s3-flex-pvc
   #   source:
-  #     dir: components/s3fs/pvc
+  #     dir: components/s3fs/pvc 
 
 extensions:
   include:
@@ -130,6 +130,7 @@ extensions:
   deploy:  
     before:
     - aws-metering
+    - kubernetes
     after:
     - inventory-configmap
   parameters:

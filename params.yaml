@@ -111,6 +111,7 @@ parameters:
   - name: user
     brief: MySQL user name
     fromEnv: COMPONENT_MYSQL_USER
+    default: mysql
   - name: password
     brief: MySQL user password  
     fromEnv: COMPONENT_MYSQL_PASSWORD
@@ -164,6 +165,7 @@ parameters:
   - name: passwordDb.email
     brief: Admin user email (to login with Dex)
     fromEnv: COMPONENT_DEX_PASSWORD_DB_EMAIL
+    default: support@agilestacks.com
     empty: allow
   - name: passwordDb.password
     brief: Admin user password (to login with Dex)
